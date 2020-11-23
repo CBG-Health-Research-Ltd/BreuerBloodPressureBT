@@ -725,7 +725,7 @@ namespace BreuerBPM
                 //Error for unable to reset state;
                 return;
             }
-            if (device.Name.Contains("SALTER") && devDisplay.IsConnectable == true)
+            if (device.Name.Contains("BM57") && devDisplay.IsConnectable == true)
             {
                 StopBleDeviceWatcher(); //Device found and connectable so stop watching
                 try
@@ -759,7 +759,7 @@ namespace BreuerBPM
                         {
                             string servicename = DisplayHelpers.GetServiceName(service);
                            
-                            if (servicename == "SimpleKeyService")
+                            if (servicename == "BloodPressure")
                             {
                                 var SALTERservice = service;
                                 serviceGUID = service.Uuid;
@@ -839,7 +839,7 @@ namespace BreuerBPM
                 Guid characteristicGUID;
                 string characteristicname = DisplayHelpers.GetCharacteristicName(c);
               
-                if (characteristicname == "SimpleKeyState")//The characteristic used to transfer data from measurements from scales
+                if (characteristicname == "BloodPressureMeasurement")//The characteristic used to transfer data from measurements from scales
                 {
                     var SALTERcharacteristic = c;
                     characteristicGUID = c.Uuid;
