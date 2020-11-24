@@ -975,6 +975,7 @@ namespace BreuerBPM
         {
             //transfer characteristic value of Ibuffer type to a byte array
             byte[] array = args.CharacteristicValue.ToArray();
+
             //Legitimate measurements will have a byte array length of 6. Byte array length of four is on/off event
             if (array.Length == 6)
             {
