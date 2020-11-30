@@ -882,11 +882,13 @@ namespace BreuerBPM
 
                     if (status == GattCommunicationStatus.Success || status == GattCommunicationStatus.Unreachable)
                     {
-                        AddValueChangedHandler();
+
 
                         //success in subscribing for value change. show alert here to user
                         //((Window.Current.Content as Frame).Content as MainPage).SetConnectionStatus("Connected");
                         updateConnectionStatus("CONNECTED");
+
+                        AddValueChangedHandler();
 
                     }
                     else
