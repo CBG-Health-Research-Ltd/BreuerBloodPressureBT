@@ -748,7 +748,7 @@ namespace BreuerBPM
                     // Note: BluetoothLEDevice.GattServices property will return an empty list for unpaired devices. For all uses we recommend using the GetGattServicesAsync method.
                     // BT_Code: GetGattServicesAsync returns a list of all the supported services of the device (even if it's not paired to the system).
                     // If the services supported by the device are expected to change during BT usage, subscribe to the GattServicesChanged event.
-                    GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                    GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////SPECIFIC TO SALTER DEVICE. NEEDS TO BE CUSTOMISED FOR EACH DEVICE SERVICE/CHARACTERISTIC
                     if (result.Status == GattCommunicationStatus.Success)
@@ -764,6 +764,7 @@ namespace BreuerBPM
                                 var SALTERservice = service;
                                 serviceGUID = service.Uuid;
                                 ConnectToService(SALTERservice);
+                                break;
                             }
                         }
                     }
@@ -803,10 +804,11 @@ namespace BreuerBPM
                 {
                     // BT_Code: Get all the child characteristics of a service. Use the cache mode to specify uncached characterstics only 
                     // and the new Async functions to get the characteristics of unpaired devices as well. 
-                    var result = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
-                    if (result.Status == GattCommunicationStatus.Success)
+                    //var result = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
+                    var result2 = await service.GetCharacteristicsAsync(BluetoothCacheMode.Cached);
+                    if (result2.Status == GattCommunicationStatus.Success)
                     {
-                        characteristics = result.Characteristics;
+                        characteristics = result2.Characteristics;
                     }
                     else
                     {
@@ -845,6 +847,7 @@ namespace BreuerBPM
                     characteristicGUID = c.Uuid;
                     selectedCharacteristic = SALTERcharacteristic;
                     SubscribeToCharacteristic();
+                    break;
                 }
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -877,7 +880,7 @@ namespace BreuerBPM
                     // We receive them in the ValueChanged event handler.
                     status = await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
 
-                    if (status == GattCommunicationStatus.Success)
+                    if (status == GattCommunicationStatus.Success || status == GattCommunicationStatus.Unreachable)
                     {
                         AddValueChangedHandler();
 
@@ -975,9 +978,13 @@ namespace BreuerBPM
         {
             //transfer characteristic value of Ibuffer type to a byte array
             byte[] array = args.CharacteristicValue.ToArray();
+            string SYS = array[1].ToString();
+            string DIA = array[3].ToString();
+            string PUL = array[14].ToString();
+            MessageBox.Show("Sys: " + SYS + ", " + "DIA: " + DIA + ", " + "PUL: " + PUL);
 
             //Legitimate measurements will have a byte array length of 6. Byte array length of four is on/off event
-            if (array.Length == 6)
+            /*if (array.Length == 6)
             {
                 
                 string hexarray = ByteArrayToString(array).Substring(8);
@@ -987,6 +994,7 @@ namespace BreuerBPM
                 decimal tempFinal = GetFinalresult();//start timer in Getfinalresult once condition is met. Only log result if timer has elapsed two seconds
             }
             finalMeasurementList = measurementList; //pre-cautionary re-assignment of measurement list to be used in acquiring the absolute final
+            */
         }
 
         //This awaits the 5 consecutive equal measruements from the characteristic value changed handler, i.e. the BT transmission. majority of the time
