@@ -10,14 +10,24 @@
         <TextBlock x:Name="AppTitle" HorizontalAlignment="Left" Margin="39,29,0,670" Text="Blood Pressure Measurement" TextWrapping="Wrap" Width="429" FontSize="32" TextAlignment="Center" Foreground="#FF4949A9"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="106,88,0,0" Text="Press 'M1' Button to establish a connection" TextWrapping="Wrap" VerticalAlignment="Top" Width="311" FontSize="16" Height="30"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="86,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Height="28" Width="164"><Run Text="Connection Status"/><Run Text=":"/><LineBreak/><Run/></TextBlock>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="69,208,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Width="164"><Run Text="1st Measurement"/><Run Text=":"/></TextBlock>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="69,291,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"><Run Text="2nd Measurement"/><Run Text=":"/></TextBlock>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="39,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Width="164"><Run Text="1st Measurement"/><Run Text=":"/></TextBlock>
+        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="38,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"><Run Text="2nd Measurement"/><Run Text=":"/></TextBlock>
         <Button x:Name="button" Content="Done Measuring" Margin="171,519,170,0" VerticalAlignment="Top" FontSize="20" Click="button_Click" Height="38"/>
         <TextBlock x:Name="Connectionstatus" HorizontalAlignment="Left" Margin="295,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Disconnected" FontSize="18"/>
-        <CheckBox x:Name="checkBox" Content="Manual Measurement" HorizontalAlignment="Left" Margin="75,172,0,0" VerticalAlignment="Top" FontSize="14" Height="22" Width="168" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked"/>
-        <Button x:Name="button2" Content="Done Measuring" Margin="171,519,170.2,0" VerticalAlignment="Top" FontSize="20" Click="button2_Click" Height="38" Visibility="Hidden"/>
-        <Button x:Name="button3" Content="Done Measuring" Margin="171,519,170.4,0" VerticalAlignment="Top" FontSize="20" Click="button3_Click" Height="38" Visibility="Hidden"/>
-        <Button x:Name="clear3" Content="X" HorizontalAlignment="Left" Margin="432,455,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" Visibility="Hidden" BorderBrush="#FF0B0B0B" RenderTransformOrigin="0.435,-0.707" Click="clear3_Click"/>
-        <TextBlock x:Name="waiting3rdMeasurement" HorizontalAlignment="Left" Margin="130,352,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Hidden" Width="273"><Run Text="Waiting for third measurement re-positioning"/><Run Text="...."/></TextBlock>
+        <CheckBox x:Name="checkBox" Content="Manual Measurement" HorizontalAlignment="Left" Margin="39,177,0,0" VerticalAlignment="Top" FontSize="14" Height="22" Width="168" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked"/>
+        <TextBlock x:Name="SYS_label" HorizontalAlignment="Left" Margin="246,177,0,0" TextWrapping="Wrap" Text="SYS" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="DIA_Label" HorizontalAlignment="Left" Margin="315,177,0,0" TextWrapping="Wrap" Text="DIA" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="PUL_Label" HorizontalAlignment="Left" Margin="382,177,0,0" TextWrapping="Wrap" Text="PUL" VerticalAlignment="Top" RenderTransformOrigin="-1.5,0.612" FontWeight="Bold"/>
+        <TextBlock x:Name="SYS1" HorizontalAlignment="Left" Margin="246,225,0,0" TextWrapping="Wrap" Text="SYS1" VerticalAlignment="Top"/>
+        <TextBlock x:Name="DIA1" HorizontalAlignment="Left" Margin="315,225,0,0" TextWrapping="Wrap" Text="DIA1" VerticalAlignment="Top"/>
+        <TextBlock x:Name="PUL1" HorizontalAlignment="Left" Margin="382,225,0,0" TextWrapping="Wrap" Text="PUL1" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SYS2" HorizontalAlignment="Left" Margin="246,297,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="SYS"/><Run Text="2"/></TextBlock>
+        <TextBlock x:Name="DIA2" HorizontalAlignment="Left" Margin="315,297,0,0" TextWrapping="Wrap" Text="DIA2" VerticalAlignment="Top"/>
+        <TextBlock x:Name="PUL2" HorizontalAlignment="Left" Margin="382,297,0,0" TextWrapping="Wrap" Text="PUL2" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="38,370,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"><Run Text="3rd"/><Run Text=" Measurement"/><Run Text=":"/></TextBlock>
+        <TextBlock x:Name="SYS3" HorizontalAlignment="Left" Margin="246,378,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="SYS3"/>
+        <TextBlock x:Name="DIA3" HorizontalAlignment="Left" Margin="315,378,0,0" TextWrapping="Wrap" Text="DIA3" VerticalAlignment="Top"/>
+        <TextBlock x:Name="PUL3" HorizontalAlignment="Left" Margin="382,378,0,0" TextWrapping="Wrap" Text="PUL3" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

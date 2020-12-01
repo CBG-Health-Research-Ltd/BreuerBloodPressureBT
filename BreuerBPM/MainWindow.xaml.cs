@@ -105,139 +105,6 @@ namespace BreuerBPM
             }
         }
 
-        //This button is for the third measurement for a BT input.
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string[] respondentInfo = GetRespondentIdentifiers();
-                arrayMeasurements[3, 2] = respondentInfo[0];
-                arrayMeasurements[3, 3] = respondentInfo[1];
-                arrayMeasurements[3, 4] = respondentInfo[2];
-                arrayMeasurements[3, 5] = respondentInfo[3];
-                if (arrayMeasurements[3, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[3, 1]) == true)//Checking for decimal point existing
-                {
-                        arrayMeasurements[3, 6] = "BluetoothInput"; 
-                        string csv = ArrayToCsv(arrayMeasurements);
-                        WriteCSVFile(csv);
-                        Application.Current.Shutdown();
-                }
-                else
-                {   //A decimal point is not present. BT transmission always sends a decimal point.
-                    MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                        "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                        "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-                }
-            }
-            catch
-            {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
-                MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                    "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                        "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-            }
-        }
-
-        //This button is for the first attempt at logging two manual measurements.
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-            //In the case of button3 click, manualmeasurement == true. So all existing string input must be converted to decimal and added appropriately to arrayMeasurements.
-            //Once added to arrayMeasurements, run the necessary checks in the exact same manner that BT measurements are checked. If greater than 1% diff then button4
-            //must be enabled which allows submission of third manual measurement. Button3 and Button4 must be disabled upon manualMeasurement unchecked i.e. manualmeasurement == false
-            decimal measurement1;
-            decimal measurement2;
-
-            try
-            {
-                //Set arrayMeasurements to equal what surveyor has put manually into text fields. Set Manual Input
-                arrayMeasurements[1, 0] = "WT";
-                arrayMeasurements[2, 0] = "WT";
-                arrayMeasurements[1, 6] = "ManualInput";
-                arrayMeasurements[2, 6] = "ManualInput";
-                char check1dp1stmeasurement = arrayMeasurements[1, 1][arrayMeasurements[1, 1].IndexOf(".") + 1];
-
-                //Checking for decimal point for all weight possibilities. Using same verification as BT measurement. 
-                if (arrayMeasurements[1, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[1, 1]) == true && arrayMeasurements[2, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[2, 1]) == true)
-                {
-                    measurement1 = ConvertStrToDec(arrayMeasurements[1, 1]);
-                    measurement2 = ConvertStrToDec(arrayMeasurements[2, 1]);
-                    if (CheckGreaterOnePercentDiff(measurement1, measurement2) == false)//Checking that there is a less than 1% difference between two measurements
-                    {
-                        string csv = ArrayToCsv(arrayMeasurements);
-                        WriteCSVFile(csv);
-                        Application.Current.Shutdown();
-                    }
-                    else
-                    {
-                        //Disable first two measurement boxes. Enable third measurement box, shift focus to third measurement, disable Done measuring Box, 
-                        //enable submit final measurements.
-                        button.IsEnabled = false;
-                        button.Visibility = Visibility.Hidden;
-                        button2.IsEnabled = false;
-                        button2.Visibility = Visibility.Hidden;
-                        waiting3rdMeasurement.Visibility = Visibility.Visible;
-                        checkBox.IsEnabled = false;
-                        MessageBox.Show("Third measurement required.\n\nPlease take 5 seconds for respondent to re-position themselves for re-taking measurement.\n\n" +
-                        "3rd measurement will be enabled after 5 seconds of closing this message.");
-                        Thread.Sleep(5000);
-                        checkBox.IsEnabled = true;
-                        waiting3rdMeasurement.Visibility = Visibility.Hidden;
-                        clear3.Visibility = Visibility.Visible;
-                        button3.Visibility = Visibility.Visible;
-                        button3.IsEnabled = true;                    
-                        clear3.Visibility = Visibility.Visible;
-                    }
-
-                }
-                else
-                {
-                    MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                        "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                        "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-                }
-            }
-            catch
-            {   //array indexing exception, user has entered either no data or some invalid data.
-                MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                   "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                       "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-            }
-        }
-
-        private void button3_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string[] respondentInfo = GetRespondentIdentifiers();
-                arrayMeasurements[3, 2] = respondentInfo[0];
-                arrayMeasurements[3, 3] = respondentInfo[1];
-                arrayMeasurements[3, 4] = respondentInfo[2];
-                arrayMeasurements[3, 5] = respondentInfo[3];
-
-                //Set measurements to be obtained from manual entry and set manual input type
-                arrayMeasurements[3, 0] = "WT";
-                arrayMeasurements[3, 6] = "ManualInput";
-
-                if (arrayMeasurements[3, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[3, 1]) == true)//Check for decimal place existing
-                {
-                    string csv = ArrayToCsv(arrayMeasurements);
-                    WriteCSVFile(csv);
-                    Application.Current.Shutdown();
-                }
-                else
-                {
-                    MessageBox.Show("Incorrect weight format.\n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                        "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                        "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                   "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                       "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
-            }
-        }
-
 
         bool manualMeasurement = false;
         bool regexOverride = false;//allows usage of text box clear operations to delte old results by not having regex applied to user input
@@ -341,8 +208,6 @@ namespace BreuerBPM
 
                 button.IsEnabled = false;
                 button.Visibility = Visibility.Hidden;
-                button2.IsEnabled = true;
-                button2.Visibility = Visibility.Visible;
 
             }
             else //Bluetooth measuring so setting initial button again.
@@ -350,15 +215,10 @@ namespace BreuerBPM
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
 
-                button2.IsEnabled = false;
-                button2.Visibility = Visibility.Hidden;
-                button3.IsEnabled = false;
-                button3.Visibility = Visibility.Hidden;
 
             }
 
             //clear visibility of all things related to taking the third measurement
-            clear3.Visibility = Visibility.Hidden;
           
 
             //Previous input used in Regex expressions for only allowing certain char input. Clearing these avoids duplication of previous inout values.
@@ -918,7 +778,7 @@ namespace BreuerBPM
             string PUL = finalMeasurements[2];
 
             //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3. These are the normal cases. must handle re-taking measurements
-            switch (finalMeasurementList.Count)
+            switch (finalMeasurementsList.Count)
             {
                 case 1:
                     field1enabled = true;
@@ -930,11 +790,9 @@ namespace BreuerBPM
                     field3enabled = true;
                     break;
             }
-            
 
-
-            MessageBox.Show("Sys: " + SYS + ", " + "DIA: " + DIA + ", " + "PUL: " + PUL);
             allMeasurements.Clear();
+            InputValues(SYS, DIA, PUL);
 
         }
 
@@ -942,21 +800,37 @@ namespace BreuerBPM
         {
             if (field1enabled == true)
             {
-
+                Set1stMeasurement(sys, dia, pul);
             }
             else if (field2enabled == true)
             {
-
+                Set2ndMeasurement(sys, dia, pul);
             }
             else if (field3enabled == true)
             {
-
+                Set3rdMeasurement(sys, dia, pul);
             }
             field1enabled = false;
             field2enabled = false;
             field3enabled = false;
 
         }
+
+        public void Set1stMeasurement(string sys, string dia, string pul)
+        {
+            Application.Current.Dispatcher.Invoke(() => { SYS1.Text = sys; DIA1.Text = dia; PUL1.Text = pul; });
+        }
+
+        public void Set2ndMeasurement(string sys, string dia, string pul)
+        {
+            Application.Current.Dispatcher.Invoke(() => { SYS2.Text = sys; DIA2.Text = dia; PUL2.Text = pul; });
+        }
+
+        public void Set3rdMeasurement(string sys, string dia, string pul)
+        {
+            Application.Current.Dispatcher.Invoke(() => { SYS3.Text = sys; DIA3.Text = dia; PUL3.Text = pul; });
+        }
+
 
         //Three functions below handle all the manual input cases. allowing only numeric values and decimal place. 
         string previousInput = "";
