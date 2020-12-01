@@ -74,24 +74,11 @@ namespace BreuerBPM
             decimal measurement2;
             try
             {
-                if (arrayMeasurements[1, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[1, 1]) == true && arrayMeasurements[2, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[2, 1]) == true)//Checking for decimal point existing. This could be improved?
+                if (true)
                 {
-                    arrayMeasurements[1, 6] = "BluetoothInput";//Set as BluetoothInput for logging's sake
-                    arrayMeasurements[2, 6] = "BluetoothInput";
-                    measurement1 = ConvertStrToDec(arrayMeasurements[1, 1]);
-                    measurement2 = ConvertStrToDec(arrayMeasurements[2, 1]);
-                    if (CheckGreaterOnePercentDiff(measurement1, measurement2) == false)//Checking that there is a less than 1% difference between two measurements
-                    {
-                        string csv = ArrayToCsv(arrayMeasurements);
-                        WriteCSVFile(csv);
-                        Application.Current.Shutdown();
-                    }
-                    else
-                    {
 
-
-                    }
                 }
+                
                 else
                 {
                     //A decimal point is not present. BT transmission always sends a decimal point.
