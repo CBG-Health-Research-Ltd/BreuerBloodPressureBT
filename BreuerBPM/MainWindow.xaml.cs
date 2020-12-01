@@ -63,21 +63,6 @@ namespace BreuerBPM
             
         }
 
-        //For use in obtaining measurements from manual entry
-        public void SetW1Measurement(string text)
-        {
-            Application.Current.Dispatcher.Invoke(() => { W1Measurement.Text = text; });
-        }
-
-        public void SetW2Measurement(string text)
-        {
-            Application.Current.Dispatcher.Invoke(() => { W2Measurement.Text = text; });
-        }
-
-        public void SetW3Measurement(string text)
-        {
-            Application.Current.Dispatcher.Invoke(() => { W3Measurement.Text = text; });
-        }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -100,32 +85,7 @@ namespace BreuerBPM
                     }
                     else
                     {
-                        //Input has a greater than 1% difference therefore a third measurement is required.
-                        isThirdMeasurement = true;
-                        waiting3rdMeasurement.Visibility = Visibility.Visible;
-                        W1Measurement.IsEnabled = false;
-                        W2Measurement.IsEnabled = false;
-                        W1Measurement_TextBox.IsEnabled = false;
-                        W2Measurement_TextBox.IsEnabled = false;
-                        clear1.IsEnabled = false;
-                        clear2.IsEnabled = false;
-                        checkBox.IsEnabled = false;
-                        MessageBox.Show("Third measurement required.\n\nPlease take 5 seconds for respondent to re-position themselves for re-taking measurement.\n\n" +
-                        "3rd measurement will be enabled after 5 seconds of closing this message.");
-                        waiting3rdMeasurement.Visibility = Visibility.Hidden;
-                        Thread.Sleep(5000);
-                        checkBox.IsEnabled = true;
-                        clear1.IsEnabled = false;
-                        clear2.IsEnabled = false;
-                        textBlock4.Visibility = Visibility.Visible;
-                        textBlock5.Visibility = Visibility.Visible;
-                        clear3.Visibility = Visibility.Visible;
-                        textBlock6_Copy1.Visibility = Visibility.Visible;
-                        W3Measurement.Visibility = Visibility.Visible;
-                        button.Visibility = Visibility.Hidden;
-                        button.IsEnabled = false;
-                        button1.Visibility = Visibility.Visible;
-                        button1.IsEnabled = true;
+
 
                     }
                 }
@@ -190,9 +150,7 @@ namespace BreuerBPM
             {
                 //Set arrayMeasurements to equal what surveyor has put manually into text fields. Set Manual Input
                 arrayMeasurements[1, 0] = "WT";
-                arrayMeasurements[1, 1] = W1Measurement_TextBox.Text;
                 arrayMeasurements[2, 0] = "WT";
-                arrayMeasurements[2, 1] = W2Measurement_TextBox.Text;
                 arrayMeasurements[1, 6] = "ManualInput";
                 arrayMeasurements[2, 6] = "ManualInput";
                 char check1dp1stmeasurement = arrayMeasurements[1, 1][arrayMeasurements[1, 1].IndexOf(".") + 1];
@@ -212,16 +170,8 @@ namespace BreuerBPM
                     {
                         //Disable first two measurement boxes. Enable third measurement box, shift focus to third measurement, disable Done measuring Box, 
                         //enable submit final measurements.
-                        W1Measurement.IsEnabled = false;
-                        W2Measurement.IsEnabled = false;
-                        W1Measurement_TextBox.IsEnabled = false;
-                        W2Measurement_TextBox.IsEnabled = false;
-                        clear1.IsEnabled = false;
-                        clear2.IsEnabled = false;
                         button.IsEnabled = false;
                         button.Visibility = Visibility.Hidden;
-                        button1.IsEnabled = false;
-                        button1.Visibility = Visibility.Hidden;
                         button2.IsEnabled = false;
                         button2.Visibility = Visibility.Hidden;
                         waiting3rdMeasurement.Visibility = Visibility.Visible;
@@ -231,20 +181,9 @@ namespace BreuerBPM
                         Thread.Sleep(5000);
                         checkBox.IsEnabled = true;
                         waiting3rdMeasurement.Visibility = Visibility.Hidden;
-                        textBlock6.Visibility = Visibility.Visible;
-                        textBlock5.Visibility = Visibility.Visible;
-                        W3Measurement_TextBox.Visibility = Visibility.Visible;
                         clear3.Visibility = Visibility.Visible;
                         button3.Visibility = Visibility.Visible;
-                        button3.IsEnabled = true;
-                        textBlock6_Copy1.Visibility = Visibility.Visible;                        
-                        W3Measurement.Visibility = Visibility.Hidden;
-                        W3Measurement_TextBox.Visibility = Visibility.Visible;
-                        W3Measurement_TextBox.Focus();
-                        W3Measurement.IsEnabled = false;
-                        W3Measurement_TextBox.IsEnabled = true;
-                        textBlock4.Visibility = Visibility.Visible;
-                        textBlock5.Visibility = Visibility.Visible;                        
+                        button3.IsEnabled = true;                    
                         clear3.Visibility = Visibility.Visible;
                     }
 
@@ -276,7 +215,6 @@ namespace BreuerBPM
 
                 //Set measurements to be obtained from manual entry and set manual input type
                 arrayMeasurements[3, 0] = "WT";
-                arrayMeasurements[3, 1] = W3Measurement_TextBox.Text;
                 arrayMeasurements[3, 6] = "ManualInput";
 
                 if (arrayMeasurements[3, 1].Contains(".") && check1DecimalPlace(arrayMeasurements[3, 1]) == true)//Check for decimal place existing
@@ -305,18 +243,14 @@ namespace BreuerBPM
         bool regexOverride = false;//allows usage of text box clear operations to delte old results by not having regex applied to user input
         private void checkBox_Checked(object sender, RoutedEventArgs e)
         {
-            clear1.IsEnabled = true;
-            clear2.IsEnabled = true;
             regexOverride = true;
             manualMeasurement = true;
-            Application.Current.Dispatcher.Invoke(() => { W1Measurement_TextBox.Clear(); W2Measurement_TextBox.Clear(); W3Measurement_TextBox.Clear(); });
             MessageBox.Show("You are now entering measurements manually.\n\n" +
                 "Please ensure measurements are of 1 decimal place format\n\n" +
                 "For example, 80 kg should be inout as 80.0\n" +
                 "140 kg should be input as 140.0");
             //////
             RunCleanUp();
-            W1Measurement_TextBox.Focus();
             ///////
             regexOverride = false;
         }
@@ -325,13 +259,8 @@ namespace BreuerBPM
         {
             allMeasurements.Clear();
             initialiseSurveyorInfo(); //re-initialise array for a return to BT input.
-            W1Measurement.Text = "-Empty-";
-            W2Measurement.Text = "-Empty-";
-            clear1.IsEnabled = true;
-            clear2.IsEnabled = true;
             regexOverride = true;
             manualMeasurement = false;
-            Application.Current.Dispatcher.Invoke(() => { W1Measurement_TextBox.Clear(); W2Measurement_TextBox.Clear(); W3Measurement_TextBox.Clear(); });
             MessageBox.Show("You are now entering measurements with Bluetooth.");
             //////
             RunCleanUp();
@@ -340,6 +269,7 @@ namespace BreuerBPM
         }
 
         //Clearing measurements from indivudal fields
+        bool clearWasclicked = false;
         private void clear1_Click(object sender, RoutedEventArgs e)
         {
             clearWasclicked = true; //setting this to true allows us to override the set up warnings when clearing first BT measurement. It must be set to false where measurement added to array.
@@ -349,13 +279,10 @@ namespace BreuerBPM
             if (manualMeasurement == true)
             {
                 
-                Application.Current.Dispatcher.Invoke(() => { W1Measurement_TextBox.Clear(); });
-                W1Measurement_TextBox.Focus();
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(() => { W1Measurement.Text = "-Empty-"; });
-                allMeasurements.Clear();
+
             }
             regexOverride = false;
         }
@@ -365,12 +292,10 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
-                Application.Current.Dispatcher.Invoke(() => { W2Measurement_TextBox.Clear(); });
-                W2Measurement_TextBox.Focus();
+
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(() => { W2Measurement.Text = "-Empty-"; });
                 allMeasurements.Clear();
                 string[] temp = { "temp", "temp" };
                 allMeasurements.Add(temp); //allows a temp value to be added to allmeasurements so secodn value re-fires. second value only added if allmeasurements.count == 2
@@ -383,12 +308,10 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
-                Application.Current.Dispatcher.Invoke(() => { W3Measurement_TextBox.Clear(); });
-                W3Measurement_TextBox.Focus();
+
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(() => { W3Measurement.Text = "-Empty-"; });
             }
             regexOverride = false;
         }
@@ -415,33 +338,18 @@ namespace BreuerBPM
 
             if (manualMeasurement == true) //Enable the manualMeasurement == true button to perform submission calcs using the manually entered measurements and not timer entered measurements.
             {
-                W1Measurement.IsEnabled = false;
-                W2Measurement.IsEnabled = false;
-                W1Measurement.Visibility = Visibility.Hidden;
-                W2Measurement.Visibility = Visibility.Hidden;
-                W1Measurement_TextBox.IsEnabled = true;
-                W2Measurement_TextBox.IsEnabled = true;
-                W1Measurement_TextBox.Visibility = Visibility.Visible;
-                W2Measurement_TextBox.Visibility = Visibility.Visible;
+
                 button.IsEnabled = false;
                 button.Visibility = Visibility.Hidden;
                 button2.IsEnabled = true;
                 button2.Visibility = Visibility.Visible;
-                W1Measurement_TextBox.IsEnabled = true;
-                W2Measurement_TextBox.IsEnabled = true;
+
             }
             else //Bluetooth measuring so setting initial button again.
             {
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
-                W1Measurement.IsEnabled = true;
-                W2Measurement.IsEnabled = true;
-                W1Measurement.Visibility = Visibility.Visible;
-                W2Measurement.Visibility = Visibility.Visible;
-                W1Measurement_TextBox.IsEnabled = false;
-                W2Measurement_TextBox.IsEnabled = false;
-                W1Measurement_TextBox.Visibility = Visibility.Hidden;
-                W2Measurement_TextBox.Visibility = Visibility.Hidden;
+
                 button2.IsEnabled = false;
                 button2.Visibility = Visibility.Hidden;
                 button3.IsEnabled = false;
@@ -450,14 +358,6 @@ namespace BreuerBPM
             }
 
             //clear visibility of all things related to taking the third measurement
-            textBlock6_Copy1.Visibility = Visibility.Hidden;
-            W3Measurement.Visibility = Visibility.Hidden;
-            W3Measurement_TextBox.Visibility = Visibility.Hidden;
-            W3Measurement.IsEnabled = false;
-            W3Measurement_TextBox.IsEnabled = false;
-            button1.Visibility = Visibility.Hidden;
-            textBlock4.Visibility = Visibility.Hidden;
-            textBlock5.Visibility = Visibility.Hidden;
             clear3.Visibility = Visibility.Hidden;
           
 
@@ -966,13 +866,10 @@ namespace BreuerBPM
             return respIDSplit;
         }
 
-        //This is the actual event fired by a BT transmission from scales. It handles the stream and puts it into correct format with help from dispatcher Timer event
-        //and 5 consecutive measurement check get final result function.
-        bool isThirdMeasurement = false; //This bool needs to be set when taking third measurement, and re-set for any manual entry for 1st two measurements.
+        //Event of value change detected from BPM machine
         static List<decimal> measurementList = new List<decimal>();
         static List<decimal> finalMeasurementList = new List<decimal>();
-        string absolutefinal;
-        List<string[]> allMeasurements = new List<string[]>();
+        List<string[]> allMeasurements = new List<string[]>();//This list concerns only the measurements recieved immediately and is cleared when logging to a master measurements list.
 
         private async void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
@@ -1003,25 +900,61 @@ namespace BreuerBPM
                   
         }
 
-        //This timer is set once the 5 consecutive measurements have been detected. The scales sometimes display a value they don't actually transmit if the respondent
-        //Steps on them in an awakward way or has a last second movement. This timer fires to ensure the last permitted result is required. I.e a measurement
-        //defined by a byte length of six. Any other byte lengths are on/off events.
-        bool clearWasclicked = false;
+
         List<string[]> finalMeasurementsList = new List<string[]>();
+        //These booleans declare what measurement field is enabled depending on incoming measurements and whether a re-measurement is being taken.
+        bool field1enabled = false;
+        bool field2enabled = false;
+        bool field3enabled = false;
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             
             dispatcherTimer.Stop();
             dispatcherTimer.IsEnabled = false;
             string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1];
-            //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3
-
-
+            finalMeasurementsList.Add(finalMeasurements);
             string SYS = finalMeasurements[0];
             string DIA = finalMeasurements[1];
             string PUL = finalMeasurements[2];
+
+            //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3. These are the normal cases. must handle re-taking measurements
+            switch (finalMeasurementList.Count)
+            {
+                case 1:
+                    field1enabled = true;
+                    break;
+                case 2:
+                    field2enabled = true;
+                    break;
+                case 3:
+                    field3enabled = true;
+                    break;
+            }
+            
+
+
             MessageBox.Show("Sys: " + SYS + ", " + "DIA: " + DIA + ", " + "PUL: " + PUL);
             allMeasurements.Clear();
+
+        }
+
+        private void InputValues(string sys, string dia, string pul)
+        {
+            if (field1enabled == true)
+            {
+
+            }
+            else if (field2enabled == true)
+            {
+
+            }
+            else if (field3enabled == true)
+            {
+
+            }
+            field1enabled = false;
+            field2enabled = false;
+            field3enabled = false;
 
         }
 
@@ -1032,14 +965,14 @@ namespace BreuerBPM
             if (regexOverride == false) //Regex override allows the clear button to be used as it doesn't work if regex is applied.
             {
                 Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match(W1Measurement_TextBox.Text);
+                Match m = r.Match("DUMMY");
                 if (m.Success)
                 {
-                    previousInput = W1Measurement_TextBox.Text;
+                   // previousInput = W1Measurement_TextBox.Text;
                 }
                 else
                 {
-                    W1Measurement_TextBox.Text = previousInput;
+                    //W1Measurement_TextBox.Text = previousInput;
                 }
             }
             if (manualMeasurement == false)
@@ -1054,14 +987,14 @@ namespace BreuerBPM
             if (regexOverride == false)//Regex override allows the clear button to be used as it doesn't work if regex is applied.
             {
                 Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match(W2Measurement_TextBox.Text);
+                Match m = r.Match("DUMMY");
                 if (m.Success)
                 {
-                    previousInput1 = W2Measurement_TextBox.Text;
+                    //previousInput1 = W2Measurement_TextBox.Text;
                 }
                 else
                 {
-                    W2Measurement_TextBox.Text = previousInput1;
+                    //W2Measurement_TextBox.Text = previousInput1;
                 }
             }
             if (manualMeasurement == false)
@@ -1076,14 +1009,14 @@ namespace BreuerBPM
             if (regexOverride == false)//Regex override allows the clear button to be used as it doesn't work if regex is applied.
             {
                 Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match(W3Measurement_TextBox.Text);
+                Match m = r.Match("DUMMY");
                 if (m.Success)
                 {
-                    previousInput2 = W3Measurement_TextBox.Text;
+                    //previousInput2 = W3Measurement_TextBox.Text;
                 }
                 else
                 {
-                    W3Measurement_TextBox.Text = previousInput2;
+                    //W3Measurement_TextBox.Text = previousInput2;
                 }
             }
             if (manualMeasurement == false)
