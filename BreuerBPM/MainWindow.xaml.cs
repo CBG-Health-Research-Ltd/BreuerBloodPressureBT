@@ -52,7 +52,7 @@ namespace BreuerBPM
         //Update UI to display connection status
         public void updateConnectionStatus(string text)
         {
-            if (text == "CONNECTED")
+            if (text == "Ready For Measurement")
             {
                 Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.Green; });
             }
@@ -802,10 +802,8 @@ namespace BreuerBPM
                 var accessStatus = await service.RequestAccessAsync();
                 if (accessStatus == DeviceAccessStatus.Allowed)
                 {
-                    // BT_Code: Get all the child characteristics of a service. Use the cache mode to specify uncached characterstics only 
-                    // and the new Async functions to get the characteristics of unpaired devices as well. 
-                    //var result = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
-                    var result2 = await service.GetCharacteristicsAsync(BluetoothCacheMode.Cached);
+
+                    var result2 = await service.GetCharacteristicsAsync(BluetoothCacheMode.Cached);//Allows access to device even if not broadcasting signal, detects from cache
                     if (result2.Status == GattCommunicationStatus.Success)
                     {
                         characteristics = result2.Characteristics;
@@ -835,7 +833,7 @@ namespace BreuerBPM
                 characteristics = new List<GattCharacteristic>();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // SPECIFIC TO SALTER DEVICE. THESE NEED TO BE CUSTOMISED FOR EACH DEVICE
+            // SPECIFIC TO BPM DEVICE. THESE NEED TO BE CUSTOMISED FOR EACH DEVICE
             foreach (GattCharacteristic c in characteristics)
             {
                 Guid characteristicGUID;
@@ -853,8 +851,7 @@ namespace BreuerBPM
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
-        //Subscribe to the "SimpleKeystate" characteristic which is where measurements are sent via the shitty salter encryption. Note there's some leftover code
-        //in here from the UWP app it was modified from to accomodate salter.
+        //Subscribe to the "BloodPressureMeasurement" characteristic
         private async void SubscribeToCharacteristic()
         {
 
@@ -886,7 +883,7 @@ namespace BreuerBPM
 
                         //success in subscribing for value change. show alert here to user
                         //((Window.Current.Content as Frame).Content as MainPage).SetConnectionStatus("Connected");
-                        updateConnectionStatus("CONNECTED");
+                        updateConnectionStatus("Ready For Measurement");
                         Thread.Sleep(500);
 
                         AddValueChangedHandler();
@@ -984,115 +981,48 @@ namespace BreuerBPM
             string SYS = array[1].ToString();
             string DIA = array[3].ToString();
             string PUL = array[14].ToString();
-            MessageBox.Show("Sys: " + SYS + ", " + "DIA: " + DIA + ", " + "PUL: " + PUL);
+            string[] measurement = { SYS, DIA, PUL };
 
-            //Legitimate measurements will have a byte array length of 6. Byte array length of four is on/off event
-            /*if (array.Length == 6)
+            allMeasurements.Add(measurement);
+            if (allMeasurements.Count == 1)
             {
-                
-                string hexarray = ByteArrayToString(array).Substring(8);
-                int arraylength = hexarray.Length;
-                decimal d = (decimal)Int64.Parse(hexarray, System.Globalization.NumberStyles.HexNumber) / 20; //The "encryption" for the salter scales
-                measurementList.Add(d); //This list continues to populate until cleared by timer event fire.
-                decimal tempFinal = GetFinalresult();//start timer in Getfinalresult once condition is met. Only log result if timer has elapsed two seconds
-            }
-            finalMeasurementList = measurementList; //pre-cautionary re-assignment of measurement list to be used in acquiring the absolute final
-            */
-        }
+                RunResultsTimer();//Only running timer to get final result on the first observed characteristic value change. i.e. BPM reading. List contunues to be added to and timer finds last reading.
+            }            
 
-        //This awaits the 5 consecutive equal measruements from the characteristic value changed handler, i.e. the BT transmission. majority of the time
-        //5 consecutive measurements are enough to determine a final value, sometimes though the scale quickly sends a final value that is different and displays
-        //different to the 5 consecutives. This is handled by implementing the dispatcherTimer and recieving absolute final value.
+        }
 
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
 
-        bool transmissionComplete = false;
-        private decimal GetFinalresult()
+        private void RunResultsTimer()
         {
-            //set up dispatcherTimer so it can run on seperate thread.
-            int measureCount = measurementList.Count;
-            if (measureCount > 5)
-            {
-                try
-                {
-                    //Alerts that 5 results are the same which is the general observed transmission of final result. a slight movement howerver can register a different
-                    //final value for transmission therefore start a timer and allow Characteristic_Valuechanged to continue populating measurement list.
-                    decimal measurecalc = (measurementList[measureCount - 1] + measurementList[measureCount - 2]
-                        + measurementList[measureCount - 3] + measurementList[measureCount - 4] + measurementList[measureCount - 5]) / measurementList[measureCount - 1];
-                    if (measurecalc == 5)
-                    {
-                        //Set up timespan of 2 seconds to await any other final results that may be transmitted                       
-                        dispatcherTimer.Interval = new TimeSpan(0, 0, 3);//3 seconds seems to be reliable, yet every now and then we get a 0.1 error.
-                        dispatcherTimer.IsEnabled = true;
-                        dispatcherTimer.Start();
-                        return measurementList[measureCount - 1];                      
-                    }
-                }
-                catch (Exception e)//If user jumps off scales and it goes to 0.0kg then algorithm will try to divide by zero. Return 0 for a non-measurement
-                {
-                    return 0;
-                }
-            }
-            return 0;
+                    
+             //Set up timespan of 2 seconds to await any other final results that may be transmitted                       
+             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//3 seconds seems to be reliable, yet every now and then we get a 0.1 error.
+             dispatcherTimer.IsEnabled = true;
+             dispatcherTimer.Start();                    
+                  
         }
 
         //This timer is set once the 5 consecutive measurements have been detected. The scales sometimes display a value they don't actually transmit if the respondent
         //Steps on them in an awakward way or has a last second movement. This timer fires to ensure the last permitted result is required. I.e a measurement
         //defined by a byte length of six. Any other byte lengths are on/off events.
         bool clearWasclicked = false;
+        List<string[]> finalMeasurementsList = new List<string[]>();
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             
             dispatcherTimer.Stop();
             dispatcherTimer.IsEnabled = false;
-            int measureCount = finalMeasurementList.Count; //enitre measurement count once timer has elapsed
-            decimal tempFinal = finalMeasurementList[measureCount - 1];//Measurement list only permits 6 byte values, so this will be the last transmitted value.
-            if (tempFinal != 0) 
-            {
-                absolutefinal = tempFinal.ToString("0.0");
-                finalMeasurementList.Clear();//Clearing the list stops GetFinalresult() from retrieving multiple final values
-                string[] loggedMeasurement = { "WT", absolutefinal };
-                allMeasurements.Add(loggedMeasurement);
-                if ((allMeasurements.Count == 1) && (isThirdMeasurement == false))
-                {
-                    SetW1Measurement(loggedMeasurement[1]);//first measurement will only be set from loggedMeasurement when one measure has been taken
-                    arrayMeasurements[1, 0] = "WT";
-                    arrayMeasurements[1, 1] = loggedMeasurement[1];
-                    if (clearWasclicked == false)
-                    {
-                        SetW2Measurement("Wait..");
-                        clear1.IsEnabled = false;
-                        clear2.IsEnabled = false;
-                        MessageBox.Show("Please take 5 seconds for respondent to re-position themselves for re-taking measurement.\n\n" +
-                        "2nd measurement will be enabled 5 seconds after closing this message.");
-                        Thread.Sleep(5000);
-                        clear1.IsEnabled = true;
-                        clear2.IsEnabled = true;
-                        SetW2Measurement("-Ready-");
-                    }
-                    else
-                    {
-                        clearWasclicked = false;
-                    }
-                }
-                if ((allMeasurements.Count == 2) && (isThirdMeasurement == false))
-                {
-                    SetW2Measurement(loggedMeasurement[1]);//2nd measurement only set when 2 measurements have been taken
-                    arrayMeasurements[2, 0] = "WT";
-                    arrayMeasurements[2, 1] = loggedMeasurement[1];
-                    //string[,] arrayMeasurements = CreateRectangularArray(allMeasurements);
-                    //string csvMeasurements = ArrayToCsv(arrayMeasurements);
-                    //WriteCSVFile(csvMeasurements);
-                    allMeasurements.Clear();
-                }
-                if (isThirdMeasurement == true)//The third measurement option has been open due to greater than 1% difference.
-                {
-                    SetW3Measurement(loggedMeasurement[1]);//3rd measurement setting
-                    arrayMeasurements[3, 0] = "WT";
-                    arrayMeasurements[3, 1] = loggedMeasurement[1];
-                    allMeasurements.Clear(); //resets the list, 
-                }
-            }
+            string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1];
+            //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3
+
+
+            string SYS = finalMeasurements[0];
+            string DIA = finalMeasurements[1];
+            string PUL = finalMeasurements[2];
+            MessageBox.Show("Sys: " + SYS + ", " + "DIA: " + DIA + ", " + "PUL: " + PUL);
+            allMeasurements.Clear();
+
         }
 
         //Three functions below handle all the manual input cases. allowing only numeric values and decimal place. 

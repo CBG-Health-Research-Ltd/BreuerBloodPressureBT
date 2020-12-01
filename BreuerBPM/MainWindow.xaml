@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SALTERservice"
         mc:Ignorable="d"
-        Title="Weight Measurement" Height="744.8" Width="515">
+        Title="Blood Pressure Measurement" Height="744.8" Width="515">
     <Grid Margin="0,10,3.8,-52.8">
         <TextBlock x:Name="AppTitle" HorizontalAlignment="Left" Margin="39,29,0,670" Text="Blood Pressure Measurement" TextWrapping="Wrap" Width="429" FontSize="32" TextAlignment="Center" Foreground="#FF4949A9"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="106,88,0,0" Text="Press 'M1' Button to establish a connection" TextWrapping="Wrap" VerticalAlignment="Top" Width="311" FontSize="16" Height="30"/>
