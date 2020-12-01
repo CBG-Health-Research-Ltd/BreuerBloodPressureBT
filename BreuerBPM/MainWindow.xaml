@@ -9,11 +9,11 @@
     <Grid Margin="0,10,3.8,-52.8">
         <TextBlock x:Name="AppTitle" HorizontalAlignment="Left" Margin="39,29,0,670" Text="Blood Pressure Measurement" TextWrapping="Wrap" Width="429" FontSize="32" TextAlignment="Center" Foreground="#FF4949A9"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="106,88,0,0" Text="Press 'M1' Button to establish a connection" TextWrapping="Wrap" VerticalAlignment="Top" Width="311" FontSize="16" Height="30"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="86,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Height="28" Width="164"><Run Text="Connection Status"/><Run Text=":"/><LineBreak/><Run/></TextBlock>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="128,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Height="28" Width="61"><Run Text="Status"/><Run Text=":"/><LineBreak/><Run/></TextBlock>
         <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="39,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Width="164"><Run Text="1st Measurement"/><Run Text=":"/></TextBlock>
         <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="38,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"><Run Text="2nd Measurement"/><Run Text=":"/></TextBlock>
         <Button x:Name="button" Content="Done Measuring" Margin="171,519,170,0" VerticalAlignment="Top" FontSize="20" Click="button_Click" Height="38"/>
-        <TextBlock x:Name="Connectionstatus" HorizontalAlignment="Left" Margin="295,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Disconnected" FontSize="18"/>
+        <TextBlock x:Name="Connectionstatus" HorizontalAlignment="Left" Margin="222,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="260"><Run Text="Press 'M1' to con"/><Run Text="nect"/></TextBlock>
         <CheckBox x:Name="checkBox" Content="Manual Measurement" HorizontalAlignment="Left" Margin="39,177,0,0" VerticalAlignment="Top" FontSize="14" Height="22" Width="168" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked"/>
         <TextBlock x:Name="SYS_label" HorizontalAlignment="Left" Margin="246,177,0,0" TextWrapping="Wrap" Text="SYS" VerticalAlignment="Top" FontWeight="Bold"/>
         <TextBlock x:Name="DIA_Label" HorizontalAlignment="Left" Margin="315,177,0,0" TextWrapping="Wrap" Text="DIA" VerticalAlignment="Top" FontWeight="Bold"/>
@@ -28,6 +28,8 @@
         <TextBlock x:Name="SYS3" HorizontalAlignment="Left" Margin="246,378,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="SYS3"/>
         <TextBlock x:Name="DIA3" HorizontalAlignment="Left" Margin="315,378,0,0" TextWrapping="Wrap" Text="DIA3" VerticalAlignment="Top"/>
         <TextBlock x:Name="PUL3" HorizontalAlignment="Left" Margin="382,378,0,0" TextWrapping="Wrap" Text="PUL3" VerticalAlignment="Top"/>
-
+        <Button x:Name="clear1" Content="X" HorizontalAlignment="Left" Margin="445,219,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" BorderBrush="#FF0B0B0B" Click="clear1_Click"/>
+        <Button x:Name="clear2" Content="X" HorizontalAlignment="Left" Margin="445,292,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" BorderBrush="#FF0B0B0B" Click="clear2_Click"/>
+        <Button x:Name="clear3" Content="X" HorizontalAlignment="Left" Margin="445,374,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" BorderBrush="#FF0B0B0B" Click="clear3_Click"/>
     </Grid>
 </Window>

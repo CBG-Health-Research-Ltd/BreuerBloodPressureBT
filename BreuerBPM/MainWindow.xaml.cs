@@ -43,6 +43,9 @@ namespace BreuerBPM
             //This timer lets us retrieve the absolute final value. It needs to be set here in order for global varibales to act accordingly, otherwise
             //they are cleared after the final result data-check.
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            clear1.IsEnabled = false;
+            clear2.IsEnabled = false;
+            clear3.IsEnabled = false;
 
             //starts looking for Salter BT device
             StartBleDeviceWatcher();
@@ -60,7 +63,7 @@ namespace BreuerBPM
             {
                 Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.Black; });
             }
-            
+
         }
 
 
@@ -136,26 +139,31 @@ namespace BreuerBPM
         }
 
         //Clearing measurements from indivudal fields
-        bool clearWasclicked = false;
+        bool clear1WasClicked = false;
+        string measurementField = "";
         private void clear1_Click(object sender, RoutedEventArgs e)
         {
-            clearWasclicked = true; //setting this to true allows us to override the set up warnings when clearing first BT measurement. It must be set to false where measurement added to array.
+            clear1WasClicked = true; //setting this to true allows us to override the set up warnings when clearing first BT measurement. It must be set to false where measurement added to array.
+            measurementField = "measurement1";
             regexOverride = true;
-            arrayMeasurements[1, 0] = null;
-            arrayMeasurements[1, 1] = null;
             if (manualMeasurement == true)
             {
-                
+
             }
             else
             {
-
+                clear2.IsEnabled = false;
+                clear3.IsEnabled = false;
+                ClearMeasurement(measurementField);
             }
             regexOverride = false;
         }
 
+        bool clear2WasClicked = false;
         private void clear2_Click(object sender, RoutedEventArgs e)
         {
+            clear2WasClicked = true;
+            measurementField = "measurement2";
             regexOverride = true;
             if (manualMeasurement == true)
             {
@@ -163,15 +171,20 @@ namespace BreuerBPM
             }
             else
             {
-                allMeasurements.Clear();
-                string[] temp = { "temp", "temp" };
-                allMeasurements.Add(temp); //allows a temp value to be added to allmeasurements so secodn value re-fires. second value only added if allmeasurements.count == 2
+                //allMeasurements.Clear();
+                clear1.IsEnabled = false;
+                clear3.IsEnabled = false;
+                ClearMeasurement(measurementField);
+
             }
             regexOverride = false;
         }
 
+        bool clear3WasClicked = false;
         private void clear3_Click(object sender, RoutedEventArgs e)
         {
+            clear3WasClicked = true;
+            measurementField = "measurement3";
             regexOverride = true;
             if (manualMeasurement == true)
             {
@@ -179,8 +192,28 @@ namespace BreuerBPM
             }
             else
             {
+                clear1.IsEnabled = false;
+                clear2.IsEnabled = false;
+                ClearMeasurement(measurementField);
             }
             regexOverride = false;
+        }
+
+        public void ClearMeasurement(string measurementField)
+        {
+            switch (measurementField)
+            {
+                case "measurement1":
+                    Application.Current.Dispatcher.Invoke(() => { SYS1.Text = "empty"; DIA1.Text = "empty"; PUL1.Text = "empty"; });
+                    break;
+                case "measurement2":
+                    Application.Current.Dispatcher.Invoke(() => { SYS2.Text = "empty"; DIA2.Text = "empty"; PUL2.Text = "empty"; });
+                    break;
+                case "measurement3":
+                    Application.Current.Dispatcher.Invoke(() => { SYS3.Text = "empty"; DIA3.Text = "empty"; PUL3.Text = "empty"; });
+                    break;
+
+            }
         }
 
         //This is run when setting manualMeasurement on or off via checkbox. Clears all fields and re-sets for taking 1st measurement.
@@ -201,7 +234,7 @@ namespace BreuerBPM
             allMeasurements.Clear();
 
             //enable first 2 measurement fields
-            
+
 
             if (manualMeasurement == true) //Enable the manualMeasurement == true button to perform submission calcs using the manually entered measurements and not timer entered measurements.
             {
@@ -219,7 +252,7 @@ namespace BreuerBPM
             }
 
             //clear visibility of all things related to taking the third measurement
-          
+
 
             //Previous input used in Regex expressions for only allowing certain char input. Clearing these avoids duplication of previous inout values.
             previousInput = "";
@@ -227,7 +260,7 @@ namespace BreuerBPM
             previousInput2 = "";
         }
 
-  
+
         #region DeviceDiscovery
 
         private ObservableCollection<BluetoothLEDeviceDisplay> KnownDevices = new ObservableCollection<BluetoothLEDeviceDisplay>();
@@ -317,7 +350,7 @@ namespace BreuerBPM
             {
                 lock (this)
                 {
-                    
+
 
                     // Protect against race condition if the task runs after the app stopped the deviceWatcher.
                     if (sender == deviceWatcher)
@@ -351,7 +384,7 @@ namespace BreuerBPM
             {
                 lock (this)
                 {
-                   
+
 
                     // Protect against race condition if the task runs after the app stopped the deviceWatcher.
                     if (sender == deviceWatcher)
@@ -518,7 +551,7 @@ namespace BreuerBPM
                         foreach (var service in services)
                         {
                             string servicename = DisplayHelpers.GetServiceName(service);
-                           
+
                             if (servicename == "BloodPressure")
                             {
                                 var SALTERservice = service;
@@ -598,7 +631,7 @@ namespace BreuerBPM
             {
                 Guid characteristicGUID;
                 string characteristicname = DisplayHelpers.GetCharacteristicName(c);
-              
+
                 if (characteristicname == "BloodPressureMeasurement")//The characteristic used to transfer data from measurements from scales
                 {
                     var SALTERcharacteristic = c;
@@ -689,7 +722,7 @@ namespace BreuerBPM
             }
         }
 
-   
+
         //set up the csv for storing measurements. individual csv file per measurement, not a master file.
         string[,] arrayMeasurements = new string[4, 7];
         private void initialiseSurveyorInfo()
@@ -744,7 +777,7 @@ namespace BreuerBPM
             if (allMeasurements.Count == 1)
             {
                 RunResultsTimer();//Only running timer to get final result on the first observed characteristic value change. i.e. BPM reading. List contunues to be added to and timer finds last reading.
-            }            
+            }
 
         }
 
@@ -752,12 +785,12 @@ namespace BreuerBPM
 
         private void RunResultsTimer()
         {
-                    
-             //Set up timespan of 2 seconds to await any other final results that may be transmitted                       
-             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//3 seconds seems to be reliable, yet every now and then we get a 0.1 error.
-             dispatcherTimer.IsEnabled = true;
-             dispatcherTimer.Start();                    
-                  
+
+            //Set up timespan of 2 seconds to await any other final results that may be transmitted                       
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//3 seconds seems to be reliable, yet every now and then we get a 0.1 error.
+            dispatcherTimer.IsEnabled = true;
+            dispatcherTimer.Start();
+
         }
 
 
@@ -768,11 +801,15 @@ namespace BreuerBPM
         bool field3enabled = false;
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            
+
             dispatcherTimer.Stop();
             dispatcherTimer.IsEnabled = false;
             string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1];
-            finalMeasurementsList.Add(finalMeasurements);
+            if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked)
+            {
+                finalMeasurementsList.Add(finalMeasurements);//This list is only added to in events of non-cleared measurements, so can iterate down the measurement fields each successive measurement.
+            }
+
             string SYS = finalMeasurements[0];
             string DIA = finalMeasurements[1];
             string PUL = finalMeasurements[2];
@@ -796,24 +833,74 @@ namespace BreuerBPM
 
         }
 
+        bool field1AtleastOneMeasurement = false;
+        bool field2AtleastOneMeasurement = false;
+        bool field3AtleastOneMeasurement = false;
         private void InputValues(string sys, string dia, string pul)
         {
-            if (field1enabled == true)
+
+            if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked) //This is the iterative method that only applies in cases where clear wasn't clicked. fields enabled by allmeasurementlist count.
             {
-                Set1stMeasurement(sys, dia, pul);
+                if (field1enabled == true)
+                {
+                    Set1stMeasurement(sys, dia, pul);
+                    field1AtleastOneMeasurement = true;//Tracking this allows to enable the clear button if another fields clear button has been pressed, but the field has value already and therefore can enable option to clear.
+                    clear1.IsEnabled = true; //Enabling each clear on each successful iterative measurement
+                }
+                else if (field2enabled == true)
+                {
+                    Set2ndMeasurement(sys, dia, pul);
+                    field2AtleastOneMeasurement = true;
+                    clear2.IsEnabled = true;
+                }
+                else if (field3enabled == true)
+                {
+                    Set3rdMeasurement(sys, dia, pul);
+                    field3AtleastOneMeasurement = true;
+                    clear3.IsEnabled = true;
+                }
             }
-            else if (field2enabled == true)
+            else
             {
-                Set2ndMeasurement(sys, dia, pul);
-            }
-            else if (field3enabled == true)
-            {
-                Set3rdMeasurement(sys, dia, pul);
+                if (clear1WasClicked)
+                {
+                    Set1stMeasurement(sys, dia, pul);
+                    setClears();
+                }
+                else if (clear2WasClicked)
+                {
+                    Set2ndMeasurement(sys, dia, pul);
+                    setClears();
+                }
+                else if (clear3WasClicked)
+                {
+                    Set3rdMeasurement(sys, dia, pul);
+                    setClears();
+                }
             }
             field1enabled = false;
             field2enabled = false;
             field3enabled = false;
+            clear1WasClicked = false;
+            clear2WasClicked = false;
+            clear3WasClicked = false;
 
+        }
+
+        private void setClears()
+        {
+            if (field1AtleastOneMeasurement)
+            {
+                clear1.IsEnabled = true;
+            }
+            if (field2AtleastOneMeasurement)
+            {
+                clear2.IsEnabled = true;
+            }
+            if (field3AtleastOneMeasurement)
+            {
+                clear3.IsEnabled = true;
+            }
         }
 
         public void Set1stMeasurement(string sys, string dia, string pul)
@@ -842,7 +929,7 @@ namespace BreuerBPM
                 Match m = r.Match("DUMMY");
                 if (m.Success)
                 {
-                   // previousInput = W1Measurement_TextBox.Text;
+                    // previousInput = W1Measurement_TextBox.Text;
                 }
                 else
                 {
@@ -994,60 +1081,6 @@ namespace BreuerBPM
         {
             decimal convert = Convert.ToDecimal(value);
             return convert;
-        }
-
-        //check that there is less than 1% difference between measurements taken
-        private bool CheckGreaterOnePercentDiff(decimal value1, decimal value2)
-        {
-            if (value1 > value2)
-            {
-                decimal percent = ((value1 / value2) * 100);
-                if (percent > 101)
-                {
-                    return true; //true indicating that there is a higher than 1% difference
-                }
-                else
-                {
-                    return false; //false indicating that the difference is within 1%
-                }
-            }
-            else if (value2 > value1)
-            {
-                decimal percent = ((value2 / value1) * 100);
-                if (percent > 101)
-                {
-                    return true; //true indicating that there is a higher than 1% difference
-                }
-                else
-                {
-                    return false; //false indicating that the difference is within 1%
-                }
-            }
-            else
-            {
-                return false; // All other cases false as value1 and value2 will be equal
-            }
-        }
-
-        private bool check1DecimalPlace(string value)
-        {
-            try
-            {
-                int DPindex = value.IndexOf('.');
-                int i;
-                if (int.TryParse(value[DPindex + 1].ToString(), out i))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         #endregion
@@ -1270,242 +1303,54 @@ namespace BreuerBPM
                 return shortUuid;
             }
 
-            /// <summary>
-            ///     Converts from a buffer to a properly sized byte array
-            /// </summary>
-            /// <param name="buffer"></param>
-            /// <returns></returns>
-            public static byte[] ReadBufferToBytes(IBuffer buffer)
+
+
+            #endregion
+
+            #region Constants
+
+            public class Constants
             {
-                var dataLength = buffer.Length;
-                var data = new byte[dataLength];
-                using (var reader = DataReader.FromBuffer(buffer))
+                // BT_Code: Initializes custom local parameters w/ properties, protection levels as well as common descriptors like User Description. 
+                public static readonly GattLocalCharacteristicParameters gattOperandParameters = new GattLocalCharacteristicParameters
                 {
-                    reader.ReadBytes(data);
-                }
-                return data;
-            }
-        }
+                    CharacteristicProperties = GattCharacteristicProperties.Write |
+                                               GattCharacteristicProperties.WriteWithoutResponse,
+                    WriteProtectionLevel = GattProtectionLevel.Plain,
+                    UserDescription = "Operand Characteristic"
+                };
 
-        #endregion
-
-        #region formatting
-
-        private string formatSalterValue(IBuffer buffer)
-        {
-            byte[] data;
-            CryptographicBuffer.CopyToByteArray(buffer, out data);
-            string hex = ByteArrayToString(data);
-            return hex;
-
-        }
-
-        private string FormatValueByPresentation(IBuffer buffer, GattPresentationFormat format)
-        {
-            // BT_Code: For the purpose of this sample, this function converts only UInt32 and
-            // UTF-8 buffers to readable text. It can be extended to support other formats if your app needs them.
-            byte[] data;
-            CryptographicBuffer.CopyToByteArray(buffer, out data);
-            if (format != null)
-            {
-                if (format.FormatType == GattPresentationFormatTypes.UInt32 && data.Length >= 4)
+                public static readonly GattLocalCharacteristicParameters gattOperatorParameters = new GattLocalCharacteristicParameters
                 {
+                    CharacteristicProperties = GattCharacteristicProperties.Write |
+                                               GattCharacteristicProperties.WriteWithoutResponse,
+                    WriteProtectionLevel = GattProtectionLevel.Plain,
+                    UserDescription = "Operator Characteristic"
+                };
 
-                }
-                else if (format.FormatType == GattPresentationFormatTypes.Utf8)
+                public static readonly GattLocalCharacteristicParameters gattResultParameters = new GattLocalCharacteristicParameters
                 {
-                    try
-                    {
-                        return Encoding.UTF8.GetString(data);
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "(error: Invalid UTF-8 string)";
-                    }
-                }
-                else if (format.FormatType == GattPresentationFormatTypes.UInt16)
-                {
-                    try
-                    {
-                        return BitConverter.ToInt16(data, 0).ToString();
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "(error: Invalid uint16 string)";
-                    }
-                }
-                else
-                {
-                    // Add support for other format types as needed.
-                    return "Unsupported format: " + CryptographicBuffer.EncodeToHexString(buffer);
-                }
-            }
-            else if (data != null)
-            {
-                // We don't know what format to use. Let's try some well-known profiles, or default back to UTF-8.
-                if (selectedCharacteristic.Uuid.Equals(GattCharacteristicUuids.HeartRateMeasurement))
-                {
-                    try
-                    {
-                        return "Heart Rate: " + ParseHeartRateValue(data).ToString();
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "Heart Rate: (unable to parse)";
-                    }
-                }
-                else if (selectedCharacteristic.Uuid.Equals(GattCharacteristicUuids.BatteryLevel))
-                {
-                    try
-                    {
-                        // battery level is encoded as a percentage value in the first byte according to
-                        // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.battery_level.xml
-                        return "Battery Level: " + data[0].ToString() + "%";
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "Battery Level: (unable to parse)";
-                    }
-                }
-                else if (selectedCharacteristic.Uuid.Equals(DisplayHelpers.GattNativeCharacteristicUuid.Weight))
-                {
-                    try
-                    {
-                        // battery level is encoded as a percentage value in the first byte according to
-                        // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.battery_level.xml
-                        return "Weight: " + data[0].ToString() + "KG";
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "weight: (unable to parse)";
-                    }
-                }
-                // This is our custom calc service Result UUID. Format it like an Int
-                else if (selectedCharacteristic.Uuid.Equals(Constants.ResultCharacteristicUuid))
-                {
-                    return BitConverter.ToInt32(data, 0).ToString();
-                }
-                // No guarantees on if a characteristic is registered for notifications.
-                else if (registeredCharacteristic != null)
-                {
-                    // This is our custom calc service Result UUID. Format it like an Int
-                    if (registeredCharacteristic.Uuid.Equals(Constants.ResultCharacteristicUuid))
-                    {
-                        return BitConverter.ToInt32(data, 0).ToString();
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        return "Unknown format: " + Encoding.UTF8.GetString(data);
-                    }
-                    catch (ArgumentException)
-                    {
-                        return "Unknown format";
-                    }
-                }
-            }
-            else
-            {
-                return "Empty data received";
-            }
+                    CharacteristicProperties = GattCharacteristicProperties.Read |
+                                               GattCharacteristicProperties.Notify,
+                    WriteProtectionLevel = GattProtectionLevel.Plain,
+                    UserDescription = "Result Characteristic"
+                };
 
+                public static readonly Guid CalcServiceUuid = Guid.Parse("caecface-e1d9-11e6-bf01-fe55135034f0");
 
-            try
-            {
-
-                for (int i = 0; i < data.Length; i++)
-                {
-                    string resulttest = BitConverter.ToInt16(data, i).ToString();
-                    string resulttest1 = BitConverter.ToInt32(data, i).ToString();
-                    //string resulttest2 = BitConverter.ToInt64(data, i).ToString();
-                    //string resulttest3 = System.Text.Encoding.ASCII.GetString(data, i, (data.Length - i -1));
-
-                   
-                }
-
-
-            }
-            catch (ArgumentException)
-            {
-                return "(error: Invalid uint16 string)";
-            }
-
-            return "Unknown format";
-        }
-
-        /// <summary>
-        /// Process the raw data received from the device into application usable data,
-        /// according the the Bluetooth Heart Rate Profile.
-        /// https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.heart_rate_measurement.xml&u=org.bluetooth.characteristic.heart_rate_measurement.xml
-        /// This function throws an exception if the data cannot be parsed.
-        /// </summary>
-        /// <param name="data">Raw data received from the heart rate monitor.</param>
-        /// <returns>The heart rate measurement value.</returns>
-        private static ushort ParseHeartRateValue(byte[] data)
-        {
-            // Heart Rate profile defined flag values
-            const byte heartRateValueFormat = 0x01;
-
-            byte flags = data[0];
-            bool isHeartRateValueSizeLong = ((flags & heartRateValueFormat) != 0);
-
-            if (isHeartRateValueSizeLong)
-            {
-                return BitConverter.ToUInt16(data, 1);
-            }
-            else
-            {
-                return data[1];
-            }
-        }
-
-        #endregion
-
-        #region Constants
-
-        public class Constants
-        {
-            // BT_Code: Initializes custom local parameters w/ properties, protection levels as well as common descriptors like User Description. 
-            public static readonly GattLocalCharacteristicParameters gattOperandParameters = new GattLocalCharacteristicParameters
-            {
-                CharacteristicProperties = GattCharacteristicProperties.Write |
-                                           GattCharacteristicProperties.WriteWithoutResponse,
-                WriteProtectionLevel = GattProtectionLevel.Plain,
-                UserDescription = "Operand Characteristic"
+                public static readonly Guid Op1CharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f1");
+                public static readonly Guid Op2CharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f2");
+                public static readonly Guid OperatorCharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f3");
+                public static readonly Guid ResultCharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f4");
             };
 
-            public static readonly GattLocalCharacteristicParameters gattOperatorParameters = new GattLocalCharacteristicParameters
-            {
-                CharacteristicProperties = GattCharacteristicProperties.Write |
-                                           GattCharacteristicProperties.WriteWithoutResponse,
-                WriteProtectionLevel = GattProtectionLevel.Plain,
-                UserDescription = "Operator Characteristic"
-            };
-
-            public static readonly GattLocalCharacteristicParameters gattResultParameters = new GattLocalCharacteristicParameters
-            {
-                CharacteristicProperties = GattCharacteristicProperties.Read |
-                                           GattCharacteristicProperties.Notify,
-                WriteProtectionLevel = GattProtectionLevel.Plain,
-                UserDescription = "Result Characteristic"
-            };
-
-            public static readonly Guid CalcServiceUuid = Guid.Parse("caecface-e1d9-11e6-bf01-fe55135034f0");
-
-            public static readonly Guid Op1CharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f1");
-            public static readonly Guid Op2CharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f2");
-            public static readonly Guid OperatorCharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f3");
-            public static readonly Guid ResultCharacteristicUuid = Guid.Parse("caec2ebc-e1d9-11e6-bf01-fe55135034f4");
-        };
 
 
 
 
+            #endregion
 
-        #endregion
 
-  
+        }
     }
 }
