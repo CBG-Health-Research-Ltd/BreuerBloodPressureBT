@@ -25,6 +25,7 @@ using Windows.Security.Cryptography;
 using Windows.Storage.Streams;
 using System.Timers;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace BreuerBPM
 {
@@ -43,9 +44,13 @@ namespace BreuerBPM
             //This timer lets us retrieve the absolute final value. It needs to be set here in order for global varibales to act accordingly, otherwise
             //they are cleared after the final result data-check.
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer2.Tick += new EventHandler(dispatcherTimer2_Tick);
             clear1.IsEnabled = false;
             clear2.IsEnabled = false;
             clear3.IsEnabled = false;
+            NextMeasurementIn.Visibility = Visibility.Hidden;
+            CounterLabel.Visibility = Visibility.Hidden;
+            MinuteDelayPrompt.Visibility = Visibility.Hidden;
 
             //starts looking for Salter BT device
             StartBleDeviceWatcher();
@@ -62,6 +67,10 @@ namespace BreuerBPM
             if (text == "Disconnected")
             {
                 Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.Black; });
+            }
+            if(text == "Awaiting Countdown")
+            {
+                Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.OrangeRed; });
             }
 
         }
@@ -201,6 +210,17 @@ namespace BreuerBPM
                     break;
 
             }
+        }
+
+        
+        private void ClearAll_Click(object sender, RoutedEventArgs e)
+        {
+            finalMeasurementsList.Clear();
+            allMeasurements.Clear();
+            ClearMeasurement("measurement1"); ClearMeasurement("measurement2"); ClearMeasurement("measurement3");
+            clear1.IsEnabled = false;
+            clear2.IsEnabled = false;
+            clear3.IsEnabled = false;
         }
 
         //This is run when setting manualMeasurement on or off via checkbox. Clears all fields and re-sets for taking 1st measurement.
@@ -773,8 +793,8 @@ namespace BreuerBPM
         private void RunResultsTimer()
         {
 
-            //Set up timespan of 2 seconds to await any other final results that may be transmitted                       
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//3 seconds seems to be reliable, yet every now and then we get a 0.1 error.
+            //Set up timespan of 1 seconds to await any other final results that may be transmitted                       
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//
             dispatcherTimer.IsEnabled = true;
             dispatcherTimer.Start();
 
@@ -893,16 +913,52 @@ namespace BreuerBPM
         public void Set1stMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS1.Text = sys; DIA1.Text = dia; PUL1.Text = pul; });
+            DisableEverythingAndStartCountdown();
         }
 
         public void Set2ndMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS2.Text = sys; DIA2.Text = dia; PUL2.Text = pul; });
+            DisableEverythingAndStartCountdown();
         }
 
         public void Set3rdMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS3.Text = sys; DIA3.Text = dia; PUL3.Text = pul; });
+            DisableEverythingAndStartCountdown();
+        }
+
+
+        System.Windows.Threading.DispatcherTimer dispatcherTimer2 = new System.Windows.Threading.DispatcherTimer();
+        int counter = 60;
+        private void DisableEverythingAndStartCountdown()
+        {
+            RemoveValueChangedHandler();//Turn off the Bluetooth stream, measurements attempted will not come through.
+            updateConnectionStatus("Awaiting Countdown");
+            counter = 10;
+            dispatcherTimer2.Interval = new TimeSpan(0, 0, 1);//
+            dispatcherTimer2.IsEnabled = true;
+            dispatcherTimer2.Start();
+        }
+
+        private void dispatcherTimer2_Tick(object sender, EventArgs e)
+        {
+            NextMeasurementIn.Visibility = Visibility.Visible;
+            CounterLabel.Visibility = Visibility.Visible;
+            MinuteDelayPrompt.Visibility = Visibility.Visible;
+            counter--;
+            CounterLabel.Text = counter.ToString();
+            if (counter == 0)
+            {
+                dispatcherTimer2.Stop();
+                AddValueChangedHandler();//Turn the bluetooth stream back on
+                NextMeasurementIn.Visibility = Visibility.Hidden;
+                CounterLabel.Visibility = Visibility.Hidden;
+                MinuteDelayPrompt.Visibility = Visibility.Hidden;
+                updateConnectionStatus("Ready For Measurement");
+            }
+
+
         }
 
 
@@ -1339,5 +1395,7 @@ namespace BreuerBPM
 
 
         }
+
+
     }
 }
