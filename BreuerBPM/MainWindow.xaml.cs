@@ -44,13 +44,26 @@ namespace BreuerBPM
             //This timer lets us retrieve the absolute final value. It needs to be set here in order for global varibales to act accordingly, otherwise
             //they are cleared after the final result data-check.
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+
+            //This timer enforced the 1 minute delay/countdown between measurements
             dispatcherTimer2.Tick += new EventHandler(dispatcherTimer2_Tick);
+
+            //Features to be hidden/disabled on initialisation
             clear1.IsEnabled = false;
             clear2.IsEnabled = false;
             clear3.IsEnabled = false;
             NextMeasurementIn.Visibility = Visibility.Hidden;
             CounterLabel.Visibility = Visibility.Hidden;
             MinuteDelayPrompt.Visibility = Visibility.Hidden;
+            SYS1_manual.Visibility = Visibility.Hidden;
+            SYS2_manual.Visibility = Visibility.Hidden;
+            SYS3_manual.Visibility = Visibility.Hidden;
+            DIA1_manual.Visibility = Visibility.Hidden;
+            DIA2_manual.Visibility = Visibility.Hidden;
+            DIA3_manual.Visibility = Visibility.Hidden;
+            PUL1_manual.Visibility = Visibility.Hidden;
+            PUL2_manual.Visibility = Visibility.Hidden;
+            PUL3_manual.Visibility = Visibility.Hidden;
 
             //starts looking for Salter BT device
             StartBleDeviceWatcher();
@@ -606,7 +619,7 @@ namespace BreuerBPM
                 if (accessStatus == DeviceAccessStatus.Allowed)
                 {
 
-                    var result2 = await service.GetCharacteristicsAsync(BluetoothCacheMode.Cached);//Allows access to device even if not broadcasting signal, detects from cache
+                    var result2 = await service.GetCharacteristicsAsync(BluetoothCacheMode.Cached);//Allows access to device even if not broadcasting signal, detects from cache.
                     if (result2.Status == GattCommunicationStatus.Success)
                     {
                         characteristics = result2.Characteristics;
@@ -680,16 +693,18 @@ namespace BreuerBPM
                     // We receive them in the ValueChanged event handler.
                     status = await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
 
-                    if (status == GattCommunicationStatus.Success || status == GattCommunicationStatus.Unreachable)
+                    if (status == GattCommunicationStatus.Success || status == GattCommunicationStatus.Unreachable) //Because connecting via BT cached mode, unreachable is fine.
                     {
 
 
                         //success in subscribing for value change. show alert here to user
                         //((Window.Current.Content as Frame).Content as MainPage).SetConnectionStatus("Connected");
                         updateConnectionStatus("Ready For Measurement");
+
+                        //This thread sleep is important, it lets the device connect without detecting a characteristic value changed event (blood pressure reading) in the connection advertisement.
                         Thread.Sleep(500);
 
-                        AddValueChangedHandler();
+                        AddValueChangedHandler();//user now knows successful connection, so can begin taking measurements which are detected by AddValueChangedHandler (Turns on characteristic_valuechanged event)
 
                     }
                     else
@@ -769,14 +784,16 @@ namespace BreuerBPM
             return respIDSplit;
         }
 
-        //Event of value change detected from BPM machine
-        static List<decimal> measurementList = new List<decimal>();
-        static List<decimal> finalMeasurementList = new List<decimal>();
+        
+        static List<decimal> measurementList = new List<decimal>();//Obsolete
+        static List<decimal> finalMeasurementList = new List<decimal>();//Obsolete
+
         List<string[]> allMeasurements = new List<string[]>();//This list concerns only the measurements recieved immediately and is cleared when logging to a master measurements list.
 
+        //Event of value change detected from BPM machine
         private async void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            //transfer characteristic value of Ibuffer type to a byte array
+            //transfer characteristic value of Ibuffer type to a byte array. Byte array already returning decimal readings. Eases processing.
             byte[] array = args.CharacteristicValue.ToArray();
             string SYS = array[1].ToString();
             string DIA = array[3].ToString();
@@ -791,13 +808,16 @@ namespace BreuerBPM
 
         }
 
+        //This timer fires when the first characteristic value change has been detected. It allows setting of the final measurement observed. 
+        //This timer is needed because the BPM machine sends up to 7 measurements via BT that were previously stored in memory.
+        //After the timer is complete, we access the last observed measurement out of the potential 7 which is the actual real time reading (most recent).
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
 
         private void RunResultsTimer()
         {
 
             //Set up timespan of 1 seconds to await any other final results that may be transmitted                       
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//Tick period of 1 second gives enough time for all measurements in memory to send and be added to allMeasurements list.
             dispatcherTimer.IsEnabled = true;
             dispatcherTimer.Start();
 
@@ -814,8 +834,8 @@ namespace BreuerBPM
 
             dispatcherTimer.Stop();
             dispatcherTimer.IsEnabled = false;
-            string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1];
-            if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked)
+            string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1]; //the measurement we are concerned with is the last observed in all measurements list after timer has ticked 1 second.
+            if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked)//Only concerned with the automatic iterative process when adding to finalmeasurements list.
             {
                 finalMeasurementsList.Add(finalMeasurements);//This list is only added to in events of non-cleared measurements, so can iterate down the measurement fields each successive measurement.
             }
@@ -838,7 +858,7 @@ namespace BreuerBPM
                     break;
             }
 
-            allMeasurements.Clear();
+            allMeasurements.Clear();//This array is cleared on timer elapse to allow a fresh stream of values from BPM machine. finalMeasurementsList is not cleared as it allows to iterate through measurement fields.
             InputValues(SYS, DIA, PUL);
 
         }

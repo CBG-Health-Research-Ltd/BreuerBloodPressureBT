@@ -32,8 +32,17 @@
         <Button x:Name="clear2" Content="X" HorizontalAlignment="Left" Margin="445,292,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" BorderBrush="#FF0B0B0B" Click="clear2_Click"/>
         <Button x:Name="clear3" Content="X" HorizontalAlignment="Left" Margin="445,374,0,0" VerticalAlignment="Top" Width="23" FontSize="20" FontFamily="Lucida Console" Background="White" Foreground="#FFDD1B1B" BorderBrush="#FF0B0B0B" Click="clear3_Click"/>
         <Button x:Name="ClearAll" Content="Clear All Measurements" HorizontalAlignment="Left" Margin="171,581,0,0" VerticalAlignment="Top" Width="155" Height="28" Click="ClearAll_Click"/>
-        <TextBlock x:Name="NextMeasurementIn" HorizontalAlignment="Left" Margin="171,439,0,0" TextWrapping="Wrap" Text="Next Measurement in: " VerticalAlignment="Top" Width="145"  FontSize="14"/>
-        <TextBlock x:Name="CounterLabel" HorizontalAlignment="Left" Margin="313,433,0,0" TextWrapping="Wrap" Text="70" VerticalAlignment="Top"  FontSize="20" RenderTransformOrigin="-0.751,0.519" Foreground="#FF118DE5"/>
+        <TextBlock x:Name="NextMeasurementIn" HorizontalAlignment="Left" Margin="171,433,0,0" TextWrapping="Wrap" Text="Next Measurement in: " VerticalAlignment="Top" Width="145"  FontSize="14"/>
+        <TextBlock x:Name="CounterLabel" HorizontalAlignment="Left" Margin="319,427,0,0" TextWrapping="Wrap" Text="70" VerticalAlignment="Top"  FontSize="20" RenderTransformOrigin="-0.751,0.519" Foreground="#FF118DE5"/>
         <TextBlock x:Name="MinuteDelayPrompt" HorizontalAlignment="Left" Margin="39,462,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="444" Height="50" TextAlignment="Center"><Run Text="Please wait 1 minute before doing the next measurement."/><Run Text=" Bluetooth values will not come through until the minute is over."/></TextBlock>
+        <TextBox x:Name="SYS1_manual" HorizontalAlignment="Left" Height="23" Margin="233,219,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="DIA1_manual" HorizontalAlignment="Left" Height="23" Margin="302,219,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="PUL1_manual" HorizontalAlignment="Left" Height="23" Margin="369,219,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="SYS2_manual" HorizontalAlignment="Left" Height="23" Margin="233,292,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="DIA2_manual" HorizontalAlignment="Left" Height="23" Margin="302,292,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="PUL2_manual" HorizontalAlignment="Left" Height="23" Margin="369,292,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="SYS3_manual" HorizontalAlignment="Left" Height="23" Margin="233,373,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="DIA3_manual" HorizontalAlignment="Left" Height="23" Margin="302,373,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="PUL3_manual" HorizontalAlignment="Left" Height="23" Margin="369,373,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="48"/>
     </Grid>
 </Window>
