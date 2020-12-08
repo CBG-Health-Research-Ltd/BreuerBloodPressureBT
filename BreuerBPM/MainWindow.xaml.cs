@@ -221,6 +221,9 @@ namespace BreuerBPM
             clear1.IsEnabled = false;
             clear2.IsEnabled = false;
             clear3.IsEnabled = false;
+            field1AtleastOneMeasurement = false;
+            field2AtleastOneMeasurement = false;
+            field3AtleastOneMeasurement = false;
         }
 
         //This is run when setting manualMeasurement on or off via checkbox. Clears all fields and re-sets for taking 1st measurement.
@@ -850,39 +853,45 @@ namespace BreuerBPM
             {
                 if (field1enabled == true)
                 {
+                    clear1.IsEnabled = true;
                     Set1stMeasurement(sys, dia, pul);
                     field1AtleastOneMeasurement = true;//Tracking this allows to enable the clear button if another fields clear button has been pressed, but the field has value already and therefore can enable option to clear.
-                    clear1.IsEnabled = true; //Enabling each clear on each successful iterative measurement
+                     //Enabling each clear on each successful iterative measurement
                 }
                 else if (field2enabled == true)
                 {
+                    clear2.IsEnabled = true;
                     Set2ndMeasurement(sys, dia, pul);
                     field2AtleastOneMeasurement = true;
-                    clear2.IsEnabled = true;
+                    
                 }
                 else if (field3enabled == true)
                 {
+                    clear3.IsEnabled = true;
                     Set3rdMeasurement(sys, dia, pul);
                     field3AtleastOneMeasurement = true;
-                    clear3.IsEnabled = true;
+                    
                 }
             }
             else
             {
                 if (clear1WasClicked)
                 {
-                    Set1stMeasurement(sys, dia, pul);
                     setClears();
+                    Set1stMeasurement(sys, dia, pul);
+                    
                 }
                 else if (clear2WasClicked)
                 {
-                    Set2ndMeasurement(sys, dia, pul);
                     setClears();
+                    Set2ndMeasurement(sys, dia, pul);
+                    
                 }
                 else if (clear3WasClicked)
                 {
-                    Set3rdMeasurement(sys, dia, pul);
                     setClears();
+                    Set3rdMeasurement(sys, dia, pul);
+                    
                 }
             }
             field1enabled = false;
@@ -935,6 +944,9 @@ namespace BreuerBPM
         {
             RemoveValueChangedHandler();//Turn off the Bluetooth stream, measurements attempted will not come through.
             updateConnectionStatus("Awaiting Countdown");
+            clear1.IsEnabled = false;
+            clear2.IsEnabled = false;
+            clear3.IsEnabled = false;
             counter = 10;
             dispatcherTimer2.Interval = new TimeSpan(0, 0, 1);//
             dispatcherTimer2.IsEnabled = true;
@@ -956,6 +968,7 @@ namespace BreuerBPM
                 CounterLabel.Visibility = Visibility.Hidden;
                 MinuteDelayPrompt.Visibility = Visibility.Hidden;
                 updateConnectionStatus("Ready For Measurement");
+                setClears();
             }
 
 
