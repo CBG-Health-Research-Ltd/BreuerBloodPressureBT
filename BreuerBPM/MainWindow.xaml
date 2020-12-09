@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SALTERservice"
+        xmlns:local="clr-namespace:BreuerBPM"
         mc:Ignorable="d"
         Title="Blood Pressure Measurement" Height="744.8" Width="515">
     <Grid Margin="0,10,3.8,-52.8">
@@ -44,5 +44,23 @@
         <TextBox x:Name="SYS3_manual" HorizontalAlignment="Left" Height="23" Margin="233,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
         <TextBox x:Name="DIA3_manual" HorizontalAlignment="Left" Height="23" Margin="302,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
         <TextBox x:Name="PUL3_manual" HorizontalAlignment="Left" Height="23" Margin="369,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
+
+        <Button x:Name="save1" Width="23" Margin="469,219,13,516" HorizontalAlignment="Stretch" Click="save1_Click" >
+            <DockPanel>
+                <Image Source="Images/green_tick.jpg"/>
+            </DockPanel>
+        </Button>
+        <Button x:Name="save2" Width="23" Margin="469,291,13,443" HorizontalAlignment="Stretch" Click="save2_Click" >
+            <DockPanel>
+                <Image Source="Images/green_tick.jpg"/>
+            </DockPanel>
+        </Button>
+        <Button x:Name="save3" Width="23" Margin="469,373,13,362" HorizontalAlignment="Stretch" Click="save3_Click" >
+            <DockPanel>
+                <Image Source="Images/green_tick.jpg"/>
+            </DockPanel>
+        </Button>
+
+
     </Grid>
 </Window>

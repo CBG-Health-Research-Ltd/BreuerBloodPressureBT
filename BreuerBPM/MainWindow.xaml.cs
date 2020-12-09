@@ -52,6 +52,9 @@ namespace BreuerBPM
             clear1.IsEnabled = false;
             clear2.IsEnabled = false;
             clear3.IsEnabled = false;
+            save1.Visibility = Visibility.Hidden;
+            save2.Visibility = Visibility.Hidden;
+            save3.Visibility = Visibility.Hidden;
             NextMeasurementIn.Visibility = Visibility.Hidden;
             CounterLabel.Visibility = Visibility.Hidden;
             MinuteDelayPrompt.Visibility = Visibility.Hidden;
@@ -222,7 +225,7 @@ namespace BreuerBPM
             }
         }
 
-        
+
         private void ClearAll_Click(object sender, RoutedEventArgs e)
         {
             finalMeasurementsList.Clear();
@@ -234,6 +237,21 @@ namespace BreuerBPM
             field1AtleastOneMeasurement = false;
             field2AtleastOneMeasurement = false;
             field3AtleastOneMeasurement = false;
+        }
+
+        private void save3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void save2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void save1_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         //This is run when setting manualMeasurement on or off via checkbox. Clears all fields and re-sets for taking 1st measurement.
