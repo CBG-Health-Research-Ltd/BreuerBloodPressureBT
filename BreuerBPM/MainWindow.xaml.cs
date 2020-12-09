@@ -48,6 +48,16 @@ namespace BreuerBPM
             //This timer enforced the 1 minute delay/countdown between measurements
             dispatcherTimer2.Tick += new EventHandler(dispatcherTimer2_Tick);
 
+            InitialiseUIThings();
+
+            //starts looking for BPM BT device
+            StartBleDeviceWatcher();
+
+        }
+
+        #region UI
+        public void InitialiseUIThings()
+        {
             //Features to be hidden/disabled on initialisation
             clear1.IsEnabled = false;
             clear2.IsEnabled = false;
@@ -67,11 +77,8 @@ namespace BreuerBPM
             PUL1_manual.Visibility = Visibility.Hidden;
             PUL2_manual.Visibility = Visibility.Hidden;
             PUL3_manual.Visibility = Visibility.Hidden;
-
-            //starts looking for BPM BT device
-            StartBleDeviceWatcher();
-
         }
+
 
         //Update UI to display connection status
         public void updateConnectionStatus(string text)
@@ -104,9 +111,9 @@ namespace BreuerBPM
             {
                 if (true)
                 {
-                    
+
                 }
-                
+
                 else
                 {
                     //A decimal point is not present. BT transmission always sends a decimal point.
@@ -259,6 +266,20 @@ namespace BreuerBPM
 
         }
 
+
+        //Handles all manual measurement boxes with one event and one regex. Permits only backspaces and numeric.
+        private void measurement_manual_input(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextAllowed(e.Text);
+        }
+
+        private static readonly Regex _regex = new Regex("[0-9\b]+"); //regex that matches disallowed text
+        private static bool IsTextAllowed(string text)
+        {
+            return !_regex.IsMatch(text);
+        }
+
+
         //This is run when setting manualMeasurement on or off via checkbox. Clears all fields and re-sets for taking 1st measurement.
         public void RunCleanUp()
         {
@@ -303,11 +324,12 @@ namespace BreuerBPM
 
 
             //Previous input used in Regex expressions for only allowing certain char input. Clearing these avoids duplication of previous inout values.
-            previousInput = "";
+            /*previousInput = "";
             previousInput1 = "";
-            previousInput2 = "";
+            previousInput2 = "";*/
         }
 
+        #endregion
 
         #region DeviceDiscovery
 
@@ -809,7 +831,7 @@ namespace BreuerBPM
             return respIDSplit;
         }
 
-        
+
         static List<decimal> measurementList = new List<decimal>();//Obsolete
         static List<decimal> finalMeasurementList = new List<decimal>();//Obsolete
 
@@ -901,21 +923,21 @@ namespace BreuerBPM
                     clear1.IsEnabled = true;
                     Set1stMeasurement(sys, dia, pul);
                     field1AtleastOneMeasurement = true;//Tracking this allows to enable the clear button if another fields clear button has been pressed, but the field has value already and therefore can enable option to clear.
-                     //Enabling each clear on each successful iterative measurement
+                                                       //Enabling each clear on each successful iterative measurement
                 }
                 else if (field2enabled == true)
                 {
                     clear2.IsEnabled = true;
                     Set2ndMeasurement(sys, dia, pul);
                     field2AtleastOneMeasurement = true;
-                    
+
                 }
                 else if (field3enabled == true)
                 {
                     clear3.IsEnabled = true;
                     Set3rdMeasurement(sys, dia, pul);
                     field3AtleastOneMeasurement = true;
-                    
+
                 }
             }
             else
@@ -924,19 +946,19 @@ namespace BreuerBPM
                 {
                     setClears();
                     Set1stMeasurement(sys, dia, pul);
-                    
+
                 }
                 else if (clear2WasClicked)
                 {
                     setClears();
                     Set2ndMeasurement(sys, dia, pul);
-                    
+
                 }
                 else if (clear3WasClicked)
                 {
                     setClears();
                     Set3rdMeasurement(sys, dia, pul);
-                    
+
                 }
             }
             field1enabled = false;
@@ -1017,74 +1039,6 @@ namespace BreuerBPM
             }
 
 
-        }
-
-
-        //Three functions below handle all the manual input cases. allowing only numeric values and decimal place. 
-        string previousInput = "";
-        private void W1Measurement_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (regexOverride == false) //Regex override allows the clear button to be used as it doesn't work if regex is applied.
-            {
-                Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match("DUMMY");
-                if (m.Success)
-                {
-                    // previousInput = W1Measurement_TextBox.Text;
-                }
-                else
-                {
-                    //W1Measurement_TextBox.Text = previousInput;
-                }
-            }
-            if (manualMeasurement == false)
-            {
-                //Any appropriate handling on textboxes if manualMeasurement false. The textBoxes will be disabled regardless so probably unneccessary.
-            }
-        }
-
-        string previousInput1 = "";
-        private void W2Measurement_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (regexOverride == false)//Regex override allows the clear button to be used as it doesn't work if regex is applied.
-            {
-                Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match("DUMMY");
-                if (m.Success)
-                {
-                    //previousInput1 = W2Measurement_TextBox.Text;
-                }
-                else
-                {
-                    //W2Measurement_TextBox.Text = previousInput1;
-                }
-            }
-            if (manualMeasurement == false)
-            {
-                //Any appropriate handling on textboxes if manualMeasurement false. The textBoxes will be disabled regardless so probably unneccessary.
-            }
-        }
-
-        string previousInput2 = "";
-        private void W3Measurement_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (regexOverride == false)//Regex override allows the clear button to be used as it doesn't work if regex is applied.
-            {
-                Regex r = new Regex("^-{0,1}\\d+\\.{0,1}\\d*$"); // This is the main part, can be altered to match any desired form or limitations
-                Match m = r.Match("DUMMY");
-                if (m.Success)
-                {
-                    //previousInput2 = W3Measurement_TextBox.Text;
-                }
-                else
-                {
-                    //W3Measurement_TextBox.Text = previousInput2;
-                }
-            }
-            if (manualMeasurement == false)
-            {
-                //Any appropriate handling on textboxes if manualMeasurement false. The textBoxes will be disabled regardless so probably unneccessary.
-            }
         }
 
         //Salter scales sepcific csv file write
@@ -1453,6 +1407,7 @@ namespace BreuerBPM
 
 
         }
+
 
 
     }

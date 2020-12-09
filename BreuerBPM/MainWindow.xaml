@@ -35,15 +35,15 @@
         <TextBlock x:Name="NextMeasurementIn" HorizontalAlignment="Left" Margin="171,433,0,0" TextWrapping="Wrap" Text="Next Measurement in: " VerticalAlignment="Top" Width="145"  FontSize="14"/>
         <TextBlock x:Name="CounterLabel" HorizontalAlignment="Left" Margin="319,427,0,0" TextWrapping="Wrap" Text="70" VerticalAlignment="Top"  FontSize="20" RenderTransformOrigin="-0.751,0.519" Foreground="#FF118DE5"/>
         <TextBlock x:Name="MinuteDelayPrompt" HorizontalAlignment="Left" Margin="39,462,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="444" Height="50" TextAlignment="Center"><Run Text="Please wait 1 minute before doing the next measurement."/><Run Text=" Bluetooth values will not come through until the minute is over."/></TextBlock>
-        <TextBox x:Name="SYS1_manual" HorizontalAlignment="Left" Height="23" Margin="233,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="DIA1_manual" HorizontalAlignment="Left" Height="23" Margin="302,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="PUL1_manual" HorizontalAlignment="Left" Height="23" Margin="369,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="SYS2_manual" HorizontalAlignment="Left" Height="23" Margin="233,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="DIA2_manual" HorizontalAlignment="Left" Height="23" Margin="302,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="PUL2_manual" HorizontalAlignment="Left" Height="23" Margin="369,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="SYS3_manual" HorizontalAlignment="Left" Height="23" Margin="233,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="DIA3_manual" HorizontalAlignment="Left" Height="23" Margin="302,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
-        <TextBox x:Name="PUL3_manual" HorizontalAlignment="Left" Height="23" Margin="369,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48"/>
+        <TextBox x:Name="SYS1_manual" HorizontalAlignment="Left" Height="23" Margin="233,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input"  />
+        <TextBox x:Name="DIA1_manual" HorizontalAlignment="Left" Height="23" Margin="302,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="PUL1_manual" HorizontalAlignment="Left" Height="23" Margin="369,219,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="SYS2_manual" HorizontalAlignment="Left" Height="23" Margin="233,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="DIA2_manual" HorizontalAlignment="Left" Height="23" Margin="302,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="PUL2_manual" HorizontalAlignment="Left" Height="23" Margin="369,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="SYS3_manual" HorizontalAlignment="Left" Height="23" Margin="233,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="DIA3_manual" HorizontalAlignment="Left" Height="23" Margin="302,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
+        <TextBox x:Name="PUL3_manual" HorizontalAlignment="Left" Height="23" Margin="369,373,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="48" PreviewTextInput="measurement_manual_input" />
 
         <Button x:Name="save1" Margin="469,219,0,0" Click="save1_Click" BorderBrush="Black" HorizontalAlignment="Left" Width="23" Height="23" VerticalAlignment="Top" >
             <DockPanel>
