@@ -65,7 +65,7 @@ namespace BreuerBPM
             PUL2_manual.Visibility = Visibility.Hidden;
             PUL3_manual.Visibility = Visibility.Hidden;
 
-            //starts looking for Salter BT device
+            //starts looking for BPM BT device
             StartBleDeviceWatcher();
 
         }
@@ -92,13 +92,12 @@ namespace BreuerBPM
         private void button_Click(object sender, RoutedEventArgs e)
         {
             //CSV conversion must go here with appropriate handling. Currently checking for decimal point in measurement
-            decimal measurement1;
-            decimal measurement2;
+
             try
             {
                 if (true)
                 {
-
+                    
                 }
                 
                 else
@@ -125,9 +124,7 @@ namespace BreuerBPM
             regexOverride = true;
             manualMeasurement = true;
             MessageBox.Show("You are now entering measurements manually.\n\n" +
-                "Please ensure measurements are of 1 decimal place format\n\n" +
-                "For example, 80 kg should be inout as 80.0\n" +
-                "140 kg should be input as 140.0");
+                "Please ensure measurements reflect that of the Blood Pressure Monitor.");
             //////
             RunCleanUp();
             ///////
@@ -243,17 +240,6 @@ namespace BreuerBPM
         public void RunCleanUp()
         {
             //reset all measruements
-            arrayMeasurements[1, 1] = null;
-            arrayMeasurements[2, 1] = null;
-            arrayMeasurements[3, 0] = null;
-            arrayMeasurements[3, 1] = null;
-            arrayMeasurements[1, 6] = null;
-            arrayMeasurements[2, 6] = null;
-            arrayMeasurements[3, 6] = null;
-            arrayMeasurements[3, 2] = null;
-            arrayMeasurements[3, 3] = null;
-            arrayMeasurements[3, 4] = null;
-            arrayMeasurements[3, 5] = null;
             allMeasurements.Clear();
 
             //enable first 2 measurement fields
@@ -261,15 +247,20 @@ namespace BreuerBPM
 
             if (manualMeasurement == true) //Enable the manualMeasurement == true button to perform submission calcs using the manually entered measurements and not timer entered measurements.
             {
-
-                button.IsEnabled = false;
-                button.Visibility = Visibility.Hidden;
+                finalMeasurementsList.Clear();
+                SYS1_manual.Visibility = Visibility.Visible;
+                SYS2_manual.Visibility = Visibility.Visible;
+                SYS3_manual.Visibility = Visibility.Visible;
+                DIA1_manual.Visibility = Visibility.Visible;
+                DIA2_manual.Visibility = Visibility.Visible;
+                DIA3_manual.Visibility = Visibility.Visible;
+                PUL1_manual.Visibility = Visibility.Visible;
+                PUL2_manual.Visibility = Visibility.Visible;
+                PUL3_manual.Visibility = Visibility.Visible;
 
             }
             else //Bluetooth measuring so setting initial button again.
             {
-                button.IsEnabled = true;
-                button.Visibility = Visibility.Visible;
 
 
             }
