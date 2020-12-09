@@ -84,9 +84,13 @@ namespace BreuerBPM
             {
                 Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.Black; });
             }
-            if(text == "Awaiting Countdown")
+            if (text == "Awaiting Countdown")
             {
                 Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.OrangeRed; });
+            }
+            if (text == "Manual Measurement")
+            {
+                Application.Current.Dispatcher.Invoke(() => { Connectionstatus.Text = text; Connectionstatus.Foreground = Brushes.Gray; });
             }
 
         }
@@ -126,6 +130,7 @@ namespace BreuerBPM
         {
             regexOverride = true;
             manualMeasurement = true;
+            updateConnectionStatus("Manual Measurement");
             MessageBox.Show("You are now entering measurements manually.\n\n" +
                 "Please ensure measurements reflect that of the Blood Pressure Monitor.");
             //////
@@ -260,8 +265,6 @@ namespace BreuerBPM
             //reset all measruements
             allMeasurements.Clear();
 
-            //enable first 2 measurement fields
-
 
             if (manualMeasurement == true) //Enable the manualMeasurement == true button to perform submission calcs using the manually entered measurements and not timer entered measurements.
             {
@@ -275,15 +278,28 @@ namespace BreuerBPM
                 PUL1_manual.Visibility = Visibility.Visible;
                 PUL2_manual.Visibility = Visibility.Visible;
                 PUL3_manual.Visibility = Visibility.Visible;
+                save1.Visibility = Visibility.Visible;
+                save2.Visibility = Visibility.Visible;
+                save3.Visibility = Visibility.Visible;
 
             }
             else //Bluetooth measuring so setting initial button again.
             {
-
+                finalMeasurementsList.Clear();
+                SYS1_manual.Visibility = Visibility.Hidden;
+                SYS2_manual.Visibility = Visibility.Hidden;
+                SYS3_manual.Visibility = Visibility.Hidden;
+                DIA1_manual.Visibility = Visibility.Hidden;
+                DIA2_manual.Visibility = Visibility.Hidden;
+                DIA3_manual.Visibility = Visibility.Hidden;
+                PUL1_manual.Visibility = Visibility.Hidden;
+                PUL2_manual.Visibility = Visibility.Hidden;
+                PUL3_manual.Visibility = Visibility.Hidden;
+                save1.Visibility = Visibility.Hidden;
+                save2.Visibility = Visibility.Hidden;
+                save3.Visibility = Visibility.Hidden;
 
             }
-
-            //clear visibility of all things related to taking the third measurement
 
 
             //Previous input used in Regex expressions for only allowing certain char input. Clearing these avoids duplication of previous inout values.
