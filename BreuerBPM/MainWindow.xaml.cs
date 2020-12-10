@@ -1140,7 +1140,8 @@ namespace BreuerBPM
 
         #endregion
 
-        //These regions are left here in case there is any further development. Do not worry about them.
+        //These regions are left here in case there is any further development. Do not worry about them. Display helpers only used in retrieving characteristic/service names
+        //from UUID for BT device
 
         #region Display Helpers
 
