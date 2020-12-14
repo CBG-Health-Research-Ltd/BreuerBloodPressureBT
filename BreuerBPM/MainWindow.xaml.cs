@@ -149,6 +149,7 @@ namespace BreuerBPM
         private void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
             allMeasurements.Clear();
+            updateConnectionStatus("Ready For Measurement");//Maybe instead we could restart device watcher here and tell m1 re-connect to be sure reconnection has happened?
             initialiseSurveyorInfo(); //re-initialise array for a return to BT input.
             regexOverride = true;
             manualMeasurement = false;
@@ -169,7 +170,7 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
-
+                ClearMeasurement(measurementField);
             }
             else
             {
@@ -188,7 +189,7 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
-
+                ClearMeasurement(measurementField);
             }
             else
             {
@@ -209,7 +210,7 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
-
+                ClearMeasurement(measurementField);
             }
             else
             {
@@ -225,13 +226,34 @@ namespace BreuerBPM
             switch (measurementField)
             {
                 case "measurement1":
-                    Application.Current.Dispatcher.Invoke(() => { SYS1.Text = "empty"; DIA1.Text = "empty"; PUL1.Text = "empty"; });
+                    if (manualMeasurement == false)
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS1.Text = "empty"; DIA1.Text = "empty"; PUL1.Text = "empty"; });
+                    }
+                    else
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS1_manual.Text = String.Empty; DIA1_manual.Text = String.Empty; PUL1_manual.Text = String.Empty; });
+                    }
                     break;
                 case "measurement2":
-                    Application.Current.Dispatcher.Invoke(() => { SYS2.Text = "empty"; DIA2.Text = "empty"; PUL2.Text = "empty"; });
+                    if (manualMeasurement == false)
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS2.Text = "empty"; DIA2.Text = "empty"; PUL2.Text = "empty"; });
+                    }
+                    else
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS2_manual.Text = String.Empty; DIA2_manual.Text = String.Empty; PUL2_manual.Text = String.Empty; });
+                    }
                     break;
                 case "measurement3":
-                    Application.Current.Dispatcher.Invoke(() => { SYS3.Text = "empty"; DIA3.Text = "empty"; PUL3.Text = "empty"; });
+                    if (manualMeasurement == false)
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS3.Text = "empty"; DIA3.Text = "empty"; PUL3.Text = "empty"; });
+                    }
+                    else
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { SYS3_manual.Text = String.Empty; DIA3_manual.Text = String.Empty; PUL3_manual.Text = String.Empty; });
+                    }
                     break;
 
             }
@@ -302,6 +324,7 @@ namespace BreuerBPM
                 save1.Visibility = Visibility.Visible;
                 save2.Visibility = Visibility.Visible;
                 save3.Visibility = Visibility.Visible;
+                clear1.IsEnabled = true;
 
             }
             else //Bluetooth measuring so setting initial button again.
