@@ -55,6 +55,7 @@ namespace BreuerBPM
 
         }
 
+        //This region handles majority of the user interface
         #region UI
         public void InitialiseUIThings()
         {
@@ -338,7 +339,7 @@ namespace BreuerBPM
                 manualMeasurement1Completed = false;
                 manualMeasurement2Completed = false;
                 save3.IsEnabled = false;
-                DisableEverythingAndStartCountdown();
+                //DisableEverythingAndStartCountdown();
             }
         }
 
@@ -425,6 +426,9 @@ namespace BreuerBPM
 
         #endregion
 
+
+        //This region discovers all devices with the BLE device watcher. It then awaits for blood pressure monitor to become available and attempts to connect to the BloodPressure service.
+        //There are some residiual function names specific to salter scales service in here, changed for inputs to be BPM specific.
         #region DeviceDiscovery
 
         private ObservableCollection<BluetoothLEDeviceDisplay> KnownDevices = new ObservableCollection<BluetoothLEDeviceDisplay>();
@@ -641,6 +645,8 @@ namespace BreuerBPM
         }
         #endregion
 
+
+        //This region has the function of connecting to the BM57 specific BloodPressure service. From here it calls the function to subscribe to the BP measurement specific characteristic
         #region DeviceConnection
 
         private BluetoothLEDevice bluetoothLeDevice;
@@ -738,6 +744,8 @@ namespace BreuerBPM
 
         #endregion
 
+        //Here we connect to the characteristic, and have access to the BT stream via the CharacteristicValuechanged event. An iterative process then controls the storing of consecutive
+        //measurements with enforced delays. There is handling for both Bluetooth and Manual measurements in this region.
         #region Data Retrieval
 
         private GattCharacteristic selectedCharacteristic;
@@ -1095,7 +1103,7 @@ namespace BreuerBPM
         public void Set3rdMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS3.Text = sys; DIA3.Text = dia; PUL3.Text = pul; });
-            DisableEverythingAndStartCountdown();
+            //DisableEverythingAndStartCountdown();
         }
 
 
