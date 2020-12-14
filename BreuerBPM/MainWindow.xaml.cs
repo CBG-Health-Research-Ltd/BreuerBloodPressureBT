@@ -295,7 +295,10 @@ namespace BreuerBPM
                 clear1.IsEnabled = true;
                 SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false;
                 manualMeasurement1Completed = true;
+                manualMeasurement2Completed = false;
+                manualMeasurement3Completed = false;
                 save1.IsEnabled = false;
+                DisableEverythingAndStartCountdown();
             }
         }
 
@@ -312,7 +315,10 @@ namespace BreuerBPM
                 clear2.IsEnabled = true;
                 SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false;
                 manualMeasurement2Completed = true;
+                manualMeasurement1Completed = false;
+                manualMeasurement3Completed = false;
                 save2.IsEnabled = false;
+                DisableEverythingAndStartCountdown();
             }
         }
 
@@ -329,7 +335,10 @@ namespace BreuerBPM
                 clear3.IsEnabled = true;
                 SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
                 manualMeasurement3Completed = true;
+                manualMeasurement1Completed = false;
+                manualMeasurement2Completed = false;
                 save3.IsEnabled = false;
+                DisableEverythingAndStartCountdown();
             }
         }
 
@@ -1098,6 +1107,7 @@ namespace BreuerBPM
             updateConnectionStatus("Awaiting Countdown");
             clear1.IsEnabled = false; clear2.IsEnabled = false; clear3.IsEnabled = false;
             save1.IsEnabled = false; save2.IsEnabled = false; save3.IsEnabled = false;
+            button.IsEnabled = false; ClearAll.IsEnabled = false;
             SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false; SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false; SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
             counter = 10;
             dispatcherTimer2.Interval = new TimeSpan(0, 0, 1);//
@@ -1115,13 +1125,26 @@ namespace BreuerBPM
             if (counter == 0)
             {
                 dispatcherTimer2.Stop();
-                AddValueChangedHandler();//Turn the bluetooth stream back on
                 NextMeasurementIn.Visibility = Visibility.Hidden;
                 CounterLabel.Visibility = Visibility.Hidden;
                 MinuteDelayPrompt.Visibility = Visibility.Hidden;
-                updateConnectionStatus("Ready For Measurement");
-                setClears();
-                save1.IsEnabled = true; save2.IsEnabled = true; save3.IsEnabled = true;
+                if (manualMeasurement == false)
+                {
+                    AddValueChangedHandler();//Turn the bluetooth stream back on
+                    updateConnectionStatus("Ready For Measurement");
+                    setClears();
+                }
+                else
+                {
+                    if (manualMeasurement1Completed == true) { SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true; save2.IsEnabled = true; }
+                    if (manualMeasurement2Completed == true) { SYS3_manual.IsEnabled = true; DIA3_manual.IsEnabled = true; PUL3_manual.IsEnabled = true; save3.IsEnabled = true; }
+                    if (manualMeasurement3Completed == true) { SYS1_manual.IsEnabled = true; DIA1_manual.IsEnabled = true; PUL1_manual.IsEnabled = true; save1.IsEnabled = true; }
+                    updateConnectionStatus("Manual Measurement");
+                }
+
+                button.IsEnabled = true;
+                ClearAll.IsEnabled = true;
+
             }
 
 
