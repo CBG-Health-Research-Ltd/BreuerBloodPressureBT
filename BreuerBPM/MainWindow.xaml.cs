@@ -137,6 +137,7 @@ namespace BreuerBPM
         {
             regexOverride = true;
             manualMeasurement = true;
+            RemoveValueChangedHandler();
             updateConnectionStatus("Manual Measurement");
             MessageBox.Show("You are now entering measurements manually.\n\n" +
                 "Please ensure measurements reflect that of the Blood Pressure Monitor.");
@@ -149,6 +150,7 @@ namespace BreuerBPM
         private void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
             allMeasurements.Clear();
+            AddValueChangedHandler();
             updateConnectionStatus("Ready For Measurement");//Maybe instead we could restart device watcher here and tell m1 re-connect to be sure reconnection has happened?
             initialiseSurveyorInfo(); //re-initialise array for a return to BT input.
             regexOverride = true;
@@ -170,7 +172,9 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
+                SYS1_manual.IsEnabled = true; DIA1_manual.IsEnabled = true; PUL1_manual.IsEnabled = true;
                 ClearMeasurement(measurementField);
+                save1.IsEnabled = true;
             }
             else
             {
@@ -189,7 +193,9 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
+                SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true;
                 ClearMeasurement(measurementField);
+                save2.IsEnabled = true;
             }
             else
             {
@@ -210,7 +216,9 @@ namespace BreuerBPM
             regexOverride = true;
             if (manualMeasurement == true)
             {
+                SYS3_manual.IsEnabled = true; DIA3_manual.IsEnabled = true; PUL3_manual.IsEnabled = true;
                 ClearMeasurement(measurementField);
+                save3.IsEnabled = true;
             }
             else
             {
@@ -273,21 +281,57 @@ namespace BreuerBPM
             field3AtleastOneMeasurement = false;
         }
 
-        private void save3_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void save2_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+        //Save and disable the field if all fields are filled out
+        bool manualMeasurement1Completed = false;
         private void save1_Click(object sender, RoutedEventArgs e)
         {
-
+            if (string.IsNullOrEmpty(SYS1_manual.Text) || string.IsNullOrEmpty(DIA1_manual.Text) || string.IsNullOrEmpty(PUL1_manual.Text))
+            {
+                MessageBox.Show("You are missing measurement values.\n\nPlease ensure all measurement fields are filled.");
+            }
+            else
+            {
+                MessageBox.Show("Allgood");
+                clear1.IsEnabled = true;
+                SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false;
+                manualMeasurement1Completed = true;
+                save1.IsEnabled = false;
+            }
         }
 
+        bool manualMeasurement2Completed = false;
+        private void save2_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SYS2_manual.Text) || string.IsNullOrEmpty(DIA2_manual.Text) || string.IsNullOrEmpty(PUL2_manual.Text))
+            {
+                MessageBox.Show("You are missing measurement values.\n\nPlease ensure all measurement fields are filled.");
+            }
+            else
+            {
+                MessageBox.Show("Allgood");
+                clear2.IsEnabled = true;
+                SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false;
+                manualMeasurement2Completed = true;
+                save2.IsEnabled = false;
+            }
+        }
+
+        bool manualMeasurement3Completed = false;
+        private void save3_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SYS3_manual.Text) || string.IsNullOrEmpty(DIA3_manual.Text) || string.IsNullOrEmpty(PUL3_manual.Text))
+            {
+                MessageBox.Show("You are missing measurement values.\n\nPlease ensure all measurement fields are filled.");
+            }
+            else
+            {
+                MessageBox.Show("Allgood");
+                clear3.IsEnabled = true;
+                SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
+                manualMeasurement3Completed = true;
+                save3.IsEnabled = false;
+            }
+        }
 
         //Handles all manual measurement boxes with one event and one regex. Permits only backspaces and numeric.
         private void measurement_manual_input(object sender, TextCompositionEventArgs e)
@@ -321,6 +365,15 @@ namespace BreuerBPM
                 PUL1_manual.Visibility = Visibility.Visible;
                 PUL2_manual.Visibility = Visibility.Visible;
                 PUL3_manual.Visibility = Visibility.Visible;
+                SYS1.Visibility = Visibility.Hidden;
+                SYS2.Visibility = Visibility.Hidden;
+                SYS3.Visibility = Visibility.Hidden;
+                DIA1.Visibility = Visibility.Hidden;
+                DIA2.Visibility = Visibility.Hidden;
+                DIA3.Visibility = Visibility.Hidden;
+                PUL1.Visibility = Visibility.Hidden;
+                PUL2.Visibility = Visibility.Hidden;
+                PUL3.Visibility = Visibility.Hidden;
                 save1.Visibility = Visibility.Visible;
                 save2.Visibility = Visibility.Visible;
                 save3.Visibility = Visibility.Visible;
@@ -339,6 +392,15 @@ namespace BreuerBPM
                 PUL1_manual.Visibility = Visibility.Hidden;
                 PUL2_manual.Visibility = Visibility.Hidden;
                 PUL3_manual.Visibility = Visibility.Hidden;
+                SYS1.Visibility = Visibility.Visible;
+                SYS2.Visibility = Visibility.Visible;
+                SYS3.Visibility = Visibility.Visible;
+                DIA1.Visibility = Visibility.Visible;
+                DIA2.Visibility = Visibility.Visible;
+                DIA3.Visibility = Visibility.Visible;
+                PUL1.Visibility = Visibility.Visible;
+                PUL2.Visibility = Visibility.Visible;
+                PUL3.Visibility = Visibility.Visible;
                 save1.Visibility = Visibility.Hidden;
                 save2.Visibility = Visibility.Hidden;
                 save3.Visibility = Visibility.Hidden;
@@ -1034,9 +1096,9 @@ namespace BreuerBPM
         {
             RemoveValueChangedHandler();//Turn off the Bluetooth stream, measurements attempted will not come through.
             updateConnectionStatus("Awaiting Countdown");
-            clear1.IsEnabled = false;
-            clear2.IsEnabled = false;
-            clear3.IsEnabled = false;
+            clear1.IsEnabled = false; clear2.IsEnabled = false; clear3.IsEnabled = false;
+            save1.IsEnabled = false; save2.IsEnabled = false; save3.IsEnabled = false;
+            SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false; SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false; SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
             counter = 10;
             dispatcherTimer2.Interval = new TimeSpan(0, 0, 1);//
             dispatcherTimer2.IsEnabled = true;
@@ -1059,6 +1121,7 @@ namespace BreuerBPM
                 MinuteDelayPrompt.Visibility = Visibility.Hidden;
                 updateConnectionStatus("Ready For Measurement");
                 setClears();
+                save1.IsEnabled = true; save2.IsEnabled = true; save3.IsEnabled = true;
             }
 
 
