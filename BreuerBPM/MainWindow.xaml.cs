@@ -385,6 +385,9 @@ namespace BreuerBPM
                 save1.Visibility = Visibility.Visible;
                 save2.Visibility = Visibility.Visible;
                 save3.Visibility = Visibility.Visible;
+                SYS1_manual.IsEnabled = true;
+                DIA1_manual.IsEnabled = true;
+                PUL1_manual.IsEnabled = true;
                 clear1.IsEnabled = true;
 
             }
@@ -1089,19 +1092,39 @@ namespace BreuerBPM
         public void Set1stMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS1.Text = sys; DIA1.Text = dia; PUL1.Text = pul; });
-            DisableEverythingAndStartCountdown();
+            if (!checkAllFieldsFilled())
+            {
+                DisableEverythingAndStartCountdown();
+            }
         }
 
         public void Set2ndMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS2.Text = sys; DIA2.Text = dia; PUL2.Text = pul; });
-            DisableEverythingAndStartCountdown();
+            if (!checkAllFieldsFilled())
+            {
+                DisableEverythingAndStartCountdown();
+            }
         }
 
         public void Set3rdMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS3.Text = sys; DIA3.Text = dia; PUL3.Text = pul; });
             //DisableEverythingAndStartCountdown();
+        }
+
+        //checks if all three measurement fields have been filled, allowing us to not run the countdown if they have. For the case that a re-measurment is taken and we don't want to
+        //enforce countdown
+        public bool checkAllFieldsFilled()
+        {
+            if (field1AtleastOneMeasurement && field2AtleastOneMeasurement && field3AtleastOneMeasurement)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
