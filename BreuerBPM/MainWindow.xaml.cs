@@ -292,7 +292,6 @@ namespace BreuerBPM
             }
             else
             {
-                MessageBox.Show("Allgood");
                 clear1.IsEnabled = true;
                 SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false;
                 manualMeasurement1Completed = true;
@@ -312,7 +311,6 @@ namespace BreuerBPM
             }
             else
             {
-                MessageBox.Show("Allgood");
                 clear2.IsEnabled = true;
                 SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false;
                 manualMeasurement2Completed = true;
@@ -332,7 +330,7 @@ namespace BreuerBPM
             }
             else
             {
-                MessageBox.Show("Allgood");
+
                 clear3.IsEnabled = true;
                 SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
                 manualMeasurement3Completed = true;
@@ -1113,6 +1111,7 @@ namespace BreuerBPM
         {
             RemoveValueChangedHandler();//Turn off the Bluetooth stream, measurements attempted will not come through.
             updateConnectionStatus("Awaiting Countdown");
+            checkBox.IsEnabled = false;
             clear1.IsEnabled = false; clear2.IsEnabled = false; clear3.IsEnabled = false;
             save1.IsEnabled = false; save2.IsEnabled = false; save3.IsEnabled = false;
             button.IsEnabled = false; ClearAll.IsEnabled = false;
@@ -1132,6 +1131,7 @@ namespace BreuerBPM
             CounterLabel.Text = counter.ToString();
             if (counter == 0)
             {
+                checkBox.IsEnabled = true;
                 dispatcherTimer2.Stop();
                 NextMeasurementIn.Visibility = Visibility.Hidden;
                 CounterLabel.Visibility = Visibility.Hidden;
@@ -1144,9 +1144,9 @@ namespace BreuerBPM
                 }
                 else
                 {
-                    if (manualMeasurement1Completed == true) { SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true; save2.IsEnabled = true; }
-                    if (manualMeasurement2Completed == true) { SYS3_manual.IsEnabled = true; DIA3_manual.IsEnabled = true; PUL3_manual.IsEnabled = true; save3.IsEnabled = true; }
-                    if (manualMeasurement3Completed == true) { SYS1_manual.IsEnabled = true; DIA1_manual.IsEnabled = true; PUL1_manual.IsEnabled = true; save1.IsEnabled = true; }
+                    if (manualMeasurement1Completed == true) { SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true; save2.IsEnabled = true; clear1.IsEnabled = true;  clear2.IsEnabled = true; }
+                    if (manualMeasurement2Completed == true) { SYS3_manual.IsEnabled = true; DIA3_manual.IsEnabled = true; PUL3_manual.IsEnabled = true; save3.IsEnabled = true; clear3.IsEnabled = true; clear1.IsEnabled = true; clear2.IsEnabled = true; }
+                    if (manualMeasurement3Completed == true) { SYS1_manual.IsEnabled = true; DIA1_manual.IsEnabled = true; PUL1_manual.IsEnabled = true; save1.IsEnabled = true; clear2.IsEnabled = true; clear1.IsEnabled = true; }
                     updateConnectionStatus("Manual Measurement");
                 }
 
