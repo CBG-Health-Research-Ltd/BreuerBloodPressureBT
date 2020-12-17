@@ -158,6 +158,45 @@ namespace BreuerBPM
             }
         }
 
+        //below checks that all the measurement fields are filled with atleast two characters
+        private bool checkAllMeasurementFieldsFilled()
+        {
+            if (manualMeasurement == true)
+            {
+                if (SYS1_manual.Text.Length >= 2 && SYS2_manual.Text.Length >= 2 && SYS3_manual.Text.Length >= 2 && DIA1_manual.Text.Length >= 2 && DIA2_manual.Text.Length >= 2 && DIA3_manual.Text.Length >= 2
+                    && PUL1_manual.Text.Length >= 2 && PUL2_manual.Text.Length >= 2 && PUL3_manual.Text.Length >= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (manualMeasurement == false)
+            {
+                if (SYS1.Text.Length >= 2 && SYS2.Text.Length >= 2 && SYS3.Text.Length >= 2 && DIA1.Text.Length >= 2 && DIA2.Text.Length >= 2 && DIA3.Text.Length >= 2
+                    && PUL1.Text.Length >= 2 && PUL2.Text.Length >= 2 && PUL3.Text.Length >= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;//will never get here
+            }
+        }
+
+        private void StoreAllMeasurementsToArray()
+        {
+
+
+        }
+
 
         bool manualMeasurement = false;
         bool regexOverride = false;//allows usage of text box clear operations to delte old results by not having regex applied to user input
@@ -945,11 +984,34 @@ namespace BreuerBPM
             arrayMeasurements[2, 3] = respondentInfo[1];
             arrayMeasurements[2, 4] = respondentInfo[2];
             arrayMeasurements[2, 5] = respondentInfo[3];
-            //arrayMeasurements[3, 2] = respondentInfo[0];
-            //arrayMeasurements[3, 3] = respondentInfo[1];
-            //arrayMeasurements[3, 4] = respondentInfo[2];
-            //arrayMeasurements[3, 5] = respondentInfo[3];
-
+            arrayMeasurements[3, 2] = respondentInfo[0];
+            arrayMeasurements[3, 3] = respondentInfo[1];
+            arrayMeasurements[3, 4] = respondentInfo[2];
+            arrayMeasurements[3, 5] = respondentInfo[3];
+            arrayMeasurements[4, 2] = respondentInfo[0];
+            arrayMeasurements[4, 3] = respondentInfo[1];
+            arrayMeasurements[4, 4] = respondentInfo[2];
+            arrayMeasurements[4, 5] = respondentInfo[3];
+            arrayMeasurements[5, 2] = respondentInfo[0];
+            arrayMeasurements[5, 3] = respondentInfo[1];
+            arrayMeasurements[5, 4] = respondentInfo[2];
+            arrayMeasurements[5, 5] = respondentInfo[3];
+            arrayMeasurements[6, 2] = respondentInfo[0];
+            arrayMeasurements[6, 3] = respondentInfo[1];
+            arrayMeasurements[6, 4] = respondentInfo[2];
+            arrayMeasurements[6, 5] = respondentInfo[3];
+            arrayMeasurements[7, 2] = respondentInfo[0];
+            arrayMeasurements[7, 3] = respondentInfo[1];
+            arrayMeasurements[7, 4] = respondentInfo[2];
+            arrayMeasurements[7, 5] = respondentInfo[3];
+            arrayMeasurements[8, 2] = respondentInfo[0];
+            arrayMeasurements[8, 3] = respondentInfo[1];
+            arrayMeasurements[8, 4] = respondentInfo[2];
+            arrayMeasurements[8, 5] = respondentInfo[3];
+            arrayMeasurements[9, 2] = respondentInfo[0];
+            arrayMeasurements[9, 3] = respondentInfo[1];
+            arrayMeasurements[9, 4] = respondentInfo[2];
+            arrayMeasurements[9, 5] = respondentInfo[3];
 
         }
 
