@@ -107,27 +107,54 @@ namespace BreuerBPM
         private void button_Click(object sender, RoutedEventArgs e)
         {
             //CSV conversion must go here with appropriate handling. Currently checking for decimal point in measurement
-
-            try
+            if (manualMeasurement == true)
             {
-                if (true)
+                try
                 {
+                    if (true)
+                    {
 
+                    }
+
+                    else
+                    {
+                        //A decimal point is not present. BT transmission always sends a decimal point.
+                        MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
+                            "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
+                            "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                    }
                 }
-
-                else
-                {
-                    //A decimal point is not present. BT transmission always sends a decimal point.
-                    MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                        "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                        "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                catch
+                {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
+                    MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
+                       "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
+                           "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
                 }
             }
-            catch
-            {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
-                MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                   "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                       "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+            else if (manualMeasurement == false)
+            {
+                try
+                {
+                    if (true)
+                    {
+
+                    }
+
+                    else
+                    {
+                        //A decimal point is not present. BT transmission always sends a decimal point.
+                        MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
+                            "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
+                            "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                    }
+                }
+                catch
+                {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
+                    MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
+                       "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
+                           "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                }
+
             }
         }
 
@@ -899,7 +926,7 @@ namespace BreuerBPM
 
 
         //set up the csv for storing measurements. individual csv file per measurement, not a master file.
-        string[,] arrayMeasurements = new string[4, 7];
+        string[,] arrayMeasurements = new string[10, 7];
         private void initialiseSurveyorInfo()
         {
             arrayMeasurements[0, 0] = "MeasureType";
