@@ -943,7 +943,7 @@ namespace BreuerBPM
                         //((Window.Current.Content as Frame).Content as MainPage).SetConnectionStatus("Connected");
                         
                         //This thread sleep is important, it lets the device connect without detecting a characteristic value changed event (blood pressure reading) in the connection advertisement.
-                        Thread.Sleep(1000);
+                        Thread.Sleep(2000);
 
                         AddValueChangedHandler();//user now knows successful connection, so can begin taking measurements which are detected by AddValueChangedHandler (Turns on characteristic_valuechanged event)
                         updateConnectionStatus("Ready For Measurement");
@@ -1083,7 +1083,7 @@ namespace BreuerBPM
         {
 
             //Set up timespan of 1 seconds to await any other final results that may be transmitted                       
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);//Tick period of 1 second gives enough time for all measurements in memory to send and be added to allMeasurements list.
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 2);//Tick period of 1 second gives enough time for all measurements in memory to send and be added to allMeasurements list.
             dispatcherTimer.IsEnabled = true;
             dispatcherTimer.Start();
 
