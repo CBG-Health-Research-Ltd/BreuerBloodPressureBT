@@ -60,6 +60,9 @@
                 <Image Source="Images/green_tick.jpg"/>
             </DockPanel>
         </Button>
+        <Ellipse x:Name="measurement_indicator1" Fill="#FF50F027" HorizontalAlignment="Left" Height="15" Margin="19,223,0,0" Stroke="Black" VerticalAlignment="Top" Width="15"/>
+        <Ellipse x:Name="measurement_indicator2" Fill="#FF50F027" HorizontalAlignment="Left" Height="15" Margin="19,295,0,0" Stroke="Black" VerticalAlignment="Top" Width="15"/>
+        <Ellipse x:Name="measurement_indicator3" Fill="#FF50F027" HorizontalAlignment="Left" Height="15" Margin="19,376,0,0" Stroke="Black" VerticalAlignment="Top" Width="15"/>
 
 
     </Grid>

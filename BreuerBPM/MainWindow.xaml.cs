@@ -78,6 +78,9 @@ namespace BreuerBPM
             PUL1_manual.Visibility = Visibility.Hidden;
             PUL2_manual.Visibility = Visibility.Hidden;
             PUL3_manual.Visibility = Visibility.Hidden;
+            measurement_indicator1.Visibility = Visibility.Hidden;
+            measurement_indicator2.Visibility = Visibility.Hidden;
+            measurement_indicator3.Visibility = Visibility.Hidden;
         }
 
 
@@ -198,6 +201,7 @@ namespace BreuerBPM
         {
             clear1WasClicked = true; //setting this to true allows us to override the set up warnings when clearing first BT measurement. It must be set to false where measurement added to array.
             measurementField = "measurement1";
+            enableIndicator(1);
             regexOverride = true;
             if (manualMeasurement == true)
             {
@@ -219,6 +223,7 @@ namespace BreuerBPM
         {
             clear2WasClicked = true;
             measurementField = "measurement2";
+            enableIndicator(2);
             regexOverride = true;
             if (manualMeasurement == true)
             {
@@ -237,11 +242,13 @@ namespace BreuerBPM
             regexOverride = false;
         }
 
+
         bool clear3WasClicked = false;
         private void clear3_Click(object sender, RoutedEventArgs e)
         {
             clear3WasClicked = true;
             measurementField = "measurement3";
+            enableIndicator(3);
             regexOverride = true;
             if (manualMeasurement == true)
             {
@@ -258,6 +265,38 @@ namespace BreuerBPM
             regexOverride = false;
         }
 
+        private void enableIndicator(int i)
+        {
+            switch (i)
+            {
+                case 1:
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        measurement_indicator1.Visibility = Visibility.Visible; measurement_indicator2.Visibility = Visibility.Hidden; measurement_indicator3.Visibility = Visibility.Hidden;
+                    });
+                    break;
+                case 2:
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        measurement_indicator1.Visibility = Visibility.Hidden; measurement_indicator2.Visibility = Visibility.Visible; measurement_indicator3.Visibility = Visibility.Hidden;
+                    });
+                    break;
+                case 3:
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        measurement_indicator1.Visibility = Visibility.Hidden; measurement_indicator2.Visibility = Visibility.Hidden; measurement_indicator3.Visibility = Visibility.Visible;
+                    });
+                    break;
+                case 0:
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        measurement_indicator1.Visibility = Visibility.Hidden; measurement_indicator2.Visibility = Visibility.Hidden; measurement_indicator3.Visibility = Visibility.Hidden;
+                    });
+                    break;
+            }
+
+        }
+
         public void ClearMeasurement(string measurementField)
         {
             switch (measurementField)
@@ -271,6 +310,7 @@ namespace BreuerBPM
                     {
                         Application.Current.Dispatcher.Invoke(() => { SYS1_manual.Text = String.Empty; DIA1_manual.Text = String.Empty; PUL1_manual.Text = String.Empty; });
                     }
+                    enableIndicator(1);
                     break;
                 case "measurement2":
                     if (manualMeasurement == false)
@@ -281,6 +321,7 @@ namespace BreuerBPM
                     {
                         Application.Current.Dispatcher.Invoke(() => { SYS2_manual.Text = String.Empty; DIA2_manual.Text = String.Empty; PUL2_manual.Text = String.Empty; });
                     }
+                    enableIndicator(2);
                     break;
                 case "measurement3":
                     if (manualMeasurement == false)
@@ -291,6 +332,7 @@ namespace BreuerBPM
                     {
                         Application.Current.Dispatcher.Invoke(() => { SYS3_manual.Text = String.Empty; DIA3_manual.Text = String.Empty; PUL3_manual.Text = String.Empty; });
                     }
+                    enableIndicator(3);
                     break;
 
             }
@@ -308,10 +350,12 @@ namespace BreuerBPM
             field1AtleastOneMeasurement = false;
             field2AtleastOneMeasurement = false;
             field3AtleastOneMeasurement = false;
+            enableIndicator(1);
         }
 
         //Save and disable the field if all fields are filled out
         bool manualMeasurement1Completed = false;
+        bool atleastOneDoneMeasurement1 = false;
         private void save1_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(SYS1_manual.Text) || string.IsNullOrEmpty(DIA1_manual.Text) || string.IsNullOrEmpty(PUL1_manual.Text))
@@ -325,12 +369,19 @@ namespace BreuerBPM
                 manualMeasurement1Completed = true;
                 manualMeasurement2Completed = false;
                 manualMeasurement3Completed = false;
+                atleastOneDoneMeasurement1 = true;
                 save1.IsEnabled = false;
-                DisableEverythingAndStartCountdown();
+                save2.IsEnabled = true;
+                enableIndicator(2);
+                if (!(atleastOneDoneMeasurement1 && atleastOneDoneMeasurement2 && atleastOneDoneMeasurement3))//Countdown only fires if haven't 
+                {
+                    DisableEverythingAndStartCountdown();
+                }
             }
         }
 
         bool manualMeasurement2Completed = false;
+        bool atleastOneDoneMeasurement2 = false;
         private void save2_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(SYS2_manual.Text) || string.IsNullOrEmpty(DIA2_manual.Text) || string.IsNullOrEmpty(PUL2_manual.Text))
@@ -344,12 +395,19 @@ namespace BreuerBPM
                 manualMeasurement2Completed = true;
                 manualMeasurement1Completed = false;
                 manualMeasurement3Completed = false;
+                atleastOneDoneMeasurement2 = true;
                 save2.IsEnabled = false;
-                DisableEverythingAndStartCountdown();
+                save3.IsEnabled = true;
+                enableIndicator(3);
+                if (!(atleastOneDoneMeasurement1 && atleastOneDoneMeasurement2 && atleastOneDoneMeasurement3))
+                {
+                    DisableEverythingAndStartCountdown();
+                }
             }
         }
 
         bool manualMeasurement3Completed = false;
+        bool atleastOneDoneMeasurement3 = false;
         private void save3_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(SYS3_manual.Text) || string.IsNullOrEmpty(DIA3_manual.Text) || string.IsNullOrEmpty(PUL3_manual.Text))
@@ -364,7 +422,9 @@ namespace BreuerBPM
                 manualMeasurement3Completed = true;
                 manualMeasurement1Completed = false;
                 manualMeasurement2Completed = false;
+                atleastOneDoneMeasurement3 = true;
                 save3.IsEnabled = false;
+                enableIndicator(0);
                 //DisableEverythingAndStartCountdown();
             }
         }
@@ -413,10 +473,13 @@ namespace BreuerBPM
                 save1.Visibility = Visibility.Visible;
                 save2.Visibility = Visibility.Visible;
                 save3.Visibility = Visibility.Visible;
+                save1.IsEnabled = true;
                 SYS1_manual.IsEnabled = true;
                 DIA1_manual.IsEnabled = true;
                 PUL1_manual.IsEnabled = true;
                 clear1.IsEnabled = true;
+
+                enableIndicator(1);
 
             }
             else //Bluetooth measuring so setting initial button again.
@@ -443,6 +506,7 @@ namespace BreuerBPM
                 save1.Visibility = Visibility.Hidden;
                 save2.Visibility = Visibility.Hidden;
                 save3.Visibility = Visibility.Hidden;
+                enableIndicator(1);
 
             }
 
@@ -877,12 +941,13 @@ namespace BreuerBPM
 
                         //success in subscribing for value change. show alert here to user
                         //((Window.Current.Content as Frame).Content as MainPage).SetConnectionStatus("Connected");
-                        updateConnectionStatus("Ready For Measurement");
-
+                        
                         //This thread sleep is important, it lets the device connect without detecting a characteristic value changed event (blood pressure reading) in the connection advertisement.
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
 
                         AddValueChangedHandler();//user now knows successful connection, so can begin taking measurements which are detected by AddValueChangedHandler (Turns on characteristic_valuechanged event)
+                        updateConnectionStatus("Ready For Measurement");
+                        enableIndicator(1);
 
                     }
                     else
@@ -1146,6 +1211,7 @@ namespace BreuerBPM
             if (!checkAllFieldsFilled())
             {
                 DisableEverythingAndStartCountdown();
+                enableIndicator(2);
             }
         }
 
@@ -1155,12 +1221,14 @@ namespace BreuerBPM
             if (!checkAllFieldsFilled())
             {
                 DisableEverythingAndStartCountdown();
+                enableIndicator(3);
             }
         }
 
         public void Set3rdMeasurement(string sys, string dia, string pul)
         {
             Application.Current.Dispatcher.Invoke(() => { SYS3.Text = sys; DIA3.Text = dia; PUL3.Text = pul; });
+            enableIndicator(0);
             //DisableEverythingAndStartCountdown();
         }
 
