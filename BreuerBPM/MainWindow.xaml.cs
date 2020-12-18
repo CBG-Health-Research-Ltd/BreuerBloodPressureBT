@@ -111,90 +111,52 @@ namespace BreuerBPM
             {
                 try
                 {
-                    if (true)
+                    if (checkAllMeasurementFieldsFilled() == true)
                     {
-
+                        StoreAllMeasurementsToArray();
+                        string csv = ArrayToCsv(arrayMeasurements);
+                        WriteCSVFile(csv);
+                        Application.Current.Shutdown();
                     }
 
                     else
                     {
                         //A decimal point is not present. BT transmission always sends a decimal point.
-                        MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                            "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                            "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                        MessageBox.Show("Some measurement fields are not filled in.\n\n" +
+                            "Ensure the measurement is exactly as displayed on monitor.\n\n" +
+                            "Atleast two digits are expected in each measurement field.");
                     }
                 }
                 catch
                 {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
-                    MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                       "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                           "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                    MessageBox.Show("Something has gone wrong, please contact IT support");
                 }
             }
             else if (manualMeasurement == false)
             {
                 try
                 {
-                    if (true)
+                    if (checkAllMeasurementFieldsFilled() == true)
                     {
-
+                        StoreAllMeasurementsToArray();
+                        string csv = ArrayToCsv(arrayMeasurements);
+                        WriteCSVFile(csv);
+                        Application.Current.Shutdown();
                     }
 
                     else
                     {
                         //A decimal point is not present. BT transmission always sends a decimal point.
-                        MessageBox.Show("Incorrect weight format. \n\nPlease ensure you've collected results using Salter Scales.\n\n" +
-                            "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                            "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                        MessageBox.Show("You are missing meeasurement fields.\n\n" +
+                            "Please ensure you have collected 3 measurements of SYS, DIA and PUL values.");
                     }
                 }
                 catch
                 {   //array is indexed in appropriately, therefore null measurement or uncorrect measurement format
-                    MessageBox.Show("Please enter some measurements and ensure you've collected results using Salter Scales.\n\n" +
-                       "If entering manually, ensure the measurement is exactly what is shown on scales.\n\n" +
-                           "The measurement expected is 1 decimal place. For example 70 kg must be input as 70.0");
+                    MessageBox.Show("Something has gone wrong, please contact IT support");
                 }
 
             }
-        }
-
-        //below checks that all the measurement fields are filled with atleast two characters
-        private bool checkAllMeasurementFieldsFilled()
-        {
-            if (manualMeasurement == true)
-            {
-                if (SYS1_manual.Text.Length >= 2 && SYS2_manual.Text.Length >= 2 && SYS3_manual.Text.Length >= 2 && DIA1_manual.Text.Length >= 2 && DIA2_manual.Text.Length >= 2 && DIA3_manual.Text.Length >= 2
-                    && PUL1_manual.Text.Length >= 2 && PUL2_manual.Text.Length >= 2 && PUL3_manual.Text.Length >= 2)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (manualMeasurement == false)
-            {
-                if (SYS1.Text.Length >= 2 && SYS2.Text.Length >= 2 && SYS3.Text.Length >= 2 && DIA1.Text.Length >= 2 && DIA2.Text.Length >= 2 && DIA3.Text.Length >= 2
-                    && PUL1.Text.Length >= 2 && PUL2.Text.Length >= 2 && PUL3.Text.Length >= 2)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;//will never get here
-            }
-        }
-
-        private void StoreAllMeasurementsToArray()
-        {
-
-
         }
 
 
@@ -1256,7 +1218,7 @@ namespace BreuerBPM
                 }
                 else
                 {
-                    if (manualMeasurement1Completed == true) { SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true; save2.IsEnabled = true; clear1.IsEnabled = true;  clear2.IsEnabled = true; }
+                    if (manualMeasurement1Completed == true) { SYS2_manual.IsEnabled = true; DIA2_manual.IsEnabled = true; PUL2_manual.IsEnabled = true; save2.IsEnabled = true; clear1.IsEnabled = true; clear2.IsEnabled = true; }
                     if (manualMeasurement2Completed == true) { SYS3_manual.IsEnabled = true; DIA3_manual.IsEnabled = true; PUL3_manual.IsEnabled = true; save3.IsEnabled = true; clear3.IsEnabled = true; clear1.IsEnabled = true; clear2.IsEnabled = true; }
                     if (manualMeasurement3Completed == true) { SYS1_manual.IsEnabled = true; DIA1_manual.IsEnabled = true; PUL1_manual.IsEnabled = true; save1.IsEnabled = true; clear2.IsEnabled = true; clear1.IsEnabled = true; }
                     updateConnectionStatus("Manual Measurement");
@@ -1270,11 +1232,92 @@ namespace BreuerBPM
 
         }
 
+        //below checks that all the measurement fields are filled with atleast two characters
+        private bool checkAllMeasurementFieldsFilled()
+        {
+            if (manualMeasurement == true)
+            {
+                if (SYS1_manual.Text.Length >= 2 && SYS2_manual.Text.Length >= 2 && SYS3_manual.Text.Length >= 2 && DIA1_manual.Text.Length >= 2 && DIA2_manual.Text.Length >= 2 && DIA3_manual.Text.Length >= 2
+                    && PUL1_manual.Text.Length >= 2 && PUL2_manual.Text.Length >= 2 && PUL3_manual.Text.Length >= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (manualMeasurement == false)
+            {
+                if (SYS1.Text.Length >= 2 && SYS2.Text.Length >= 2 && SYS3.Text.Length >= 2 && DIA1.Text.Length >= 2 && DIA2.Text.Length >= 2 && DIA3.Text.Length >= 2
+                    && PUL1.Text.Length >= 2 && PUL2.Text.Length >= 2 && PUL3.Text.Length >= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;//will never get here
+            }
+        }
+
+        private void StoreAllMeasurementsToArray()
+        {
+            if (manualMeasurement == false)
+            {
+                arrayMeasurements[1, 0] = "SYS"; arrayMeasurements[1, 1] = SYS1.Text;
+                arrayMeasurements[2, 0] = "DIA"; arrayMeasurements[2, 1] = DIA1.Text;
+                arrayMeasurements[3, 0] = "PUL"; arrayMeasurements[3, 1] = PUL1.Text;
+                arrayMeasurements[4, 0] = "SYS"; arrayMeasurements[4, 1] = SYS2.Text;
+                arrayMeasurements[5, 0] = "DIA"; arrayMeasurements[5, 1] = DIA2.Text;
+                arrayMeasurements[6, 0] = "PUL"; arrayMeasurements[6, 1] = PUL2.Text;
+                arrayMeasurements[7, 0] = "SYS"; arrayMeasurements[7, 1] = SYS3.Text;
+                arrayMeasurements[8, 0] = "DIA"; arrayMeasurements[8, 1] = DIA3.Text;
+                arrayMeasurements[9, 0] = "PUL"; arrayMeasurements[9, 1] = PUL3.Text;
+                arrayMeasurements[1, 6] = "BluetoothInput";
+                arrayMeasurements[2, 6] = "BluetoothInput";
+                arrayMeasurements[3, 6] = "BluetoothInput";
+                arrayMeasurements[4, 6] = "BluetoothInput";
+                arrayMeasurements[5, 6] = "BluetoothInput";
+                arrayMeasurements[6, 6] = "BluetoothInput";
+                arrayMeasurements[7, 6] = "BluetoothInput";
+                arrayMeasurements[8, 6] = "BluetoothInput";
+                arrayMeasurements[9, 6] = "BluetoothInput";
+
+            }
+            else
+            {
+                arrayMeasurements[1, 0] = "SYS"; arrayMeasurements[1, 1] = SYS1_manual.Text;
+                arrayMeasurements[2, 0] = "DIA"; arrayMeasurements[2, 1] = DIA1_manual.Text;
+                arrayMeasurements[3, 0] = "PUL"; arrayMeasurements[3, 1] = PUL1_manual.Text;
+                arrayMeasurements[4, 0] = "SYS"; arrayMeasurements[4, 1] = SYS2_manual.Text;
+                arrayMeasurements[5, 0] = "DIA"; arrayMeasurements[5, 1] = DIA2_manual.Text;
+                arrayMeasurements[6, 0] = "PUL"; arrayMeasurements[6, 1] = PUL2_manual.Text;
+                arrayMeasurements[7, 0] = "SYS"; arrayMeasurements[7, 1] = SYS3_manual.Text;
+                arrayMeasurements[8, 0] = "DIA"; arrayMeasurements[8, 1] = DIA3_manual.Text;
+                arrayMeasurements[9, 0] = "PUL"; arrayMeasurements[9, 1] = PUL3_manual.Text;
+                arrayMeasurements[1, 6] = "ManualInput";
+                arrayMeasurements[2, 6] = "ManualInput";
+                arrayMeasurements[3, 6] = "ManualInput";
+                arrayMeasurements[4, 6] = "ManualInput";
+                arrayMeasurements[5, 6] = "ManualInput";
+                arrayMeasurements[6, 6] = "ManualInput";
+                arrayMeasurements[7, 6] = "ManualInput";
+                arrayMeasurements[8, 6] = "ManualInput";
+                arrayMeasurements[9, 6] = "ManualInput";
+            }
+
+        }
+
         //Salter scales sepcific csv file write
         private async void WriteCSVFile(string csvMeasurements)
         {
-            System.IO.Directory.CreateDirectory(@"C:\NZHS\BodyMeasurements\WeightMeasurements");
-            string CSVFileName = @"C:\NZHS\BodyMeasurements\WeightMeasurements\" + "WeightMeasurements_" + DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss") + ".csv";
+            System.IO.Directory.CreateDirectory(@"C:\NZHS\BodyMeasurements\BloodPressureMeasurements");
+            string CSVFileName = @"C:\NZHS\BodyMeasurements\BloodPressureMeasurements\" + "BloodPressureMeasurements_" + DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss") + ".csv";
 
             System.IO.File.WriteAllText(CSVFileName, csvMeasurements);
         }
