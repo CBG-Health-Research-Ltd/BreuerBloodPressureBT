@@ -1097,35 +1097,46 @@ namespace BreuerBPM
         bool field3enabled = false;
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-
+            int measurementsInMemory = allMeasurements.Count;//Number of measurements stored in the BPM BM57 machine
             dispatcherTimer.Stop();
             dispatcherTimer.IsEnabled = false;
-            string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1]; //the measurement we are concerned with is the last observed in all measurements list after timer has ticked 1 second.
-            if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked)//Only concerned with the automatic iterative process when adding to finalmeasurements list.
+            if (measurementsInMemory <= 10)
             {
-                finalMeasurementsList.Add(finalMeasurements);//This list is only added to in events of non-cleared measurements, so can iterate down the measurement fields each successive measurement.
+                string[] finalMeasurements = allMeasurements[allMeasurements.Count - 1]; //the measurement we are concerned with is the last observed in all measurements list after timer has ticked 1 second.
+                if (!clear1WasClicked && !clear2WasClicked && !clear3WasClicked)//Only concerned with the automatic iterative process when adding to finalmeasurements list.
+                {
+                    finalMeasurementsList.Add(finalMeasurements);//This list is only added to in events of non-cleared measurements, so can iterate down the measurement fields each successive measurement.
+                }
+
+                string SYS = finalMeasurements[0];
+                string DIA = finalMeasurements[1];
+                string PUL = finalMeasurements[2];
+
+                //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3. These are the normal cases. must handle re-taking measurements
+                switch (finalMeasurementsList.Count)
+                {
+                    case 1:
+                        field1enabled = true;
+                        break;
+                    case 2:
+                        field2enabled = true;
+                        break;
+                    case 3:
+                        field3enabled = true;
+                        break;
+                }
+
+                allMeasurements.Clear();//This array is cleared on timer elapse to allow a fresh stream of values from BPM machine. finalMeasurementsList is not cleared as it allows to iterate through measurement fields.
+                InputValues(SYS, DIA, PUL);
             }
-
-            string SYS = finalMeasurements[0];
-            string DIA = finalMeasurements[1];
-            string PUL = finalMeasurements[2];
-
-            //If finalMeasurementsList.Count is equal to one then enable field set 1, if 2 enable field set 2, if 3 enable field set 3. These are the normal cases. must handle re-taking measurements
-            switch (finalMeasurementsList.Count)
+            else
             {
-                case 1:
-                    field1enabled = true;
-                    break;
-                case 2:
-                    field2enabled = true;
-                    break;
-                case 3:
-                    field3enabled = true;
-                    break;
-            }
+                allMeasurements.Clear();
+                MessageBox.Show("Your Blood Pressure device has more than 10 measurements stored in memory.\n\n" +
+                    "Please turn the device off, click 'M1', then hold down both 'M1' and 'M2'.\n\n" +
+                    "Close this message once memory is cleared, you can then continue taking measurements.");
 
-            allMeasurements.Clear();//This array is cleared on timer elapse to allow a fresh stream of values from BPM machine. finalMeasurementsList is not cleared as it allows to iterate through measurement fields.
-            InputValues(SYS, DIA, PUL);
+            }
 
         }
 
