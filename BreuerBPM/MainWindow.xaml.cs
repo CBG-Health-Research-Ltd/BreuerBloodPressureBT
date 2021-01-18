@@ -806,7 +806,7 @@ namespace BreuerBPM
                     // If the services supported by the device are expected to change during BT usage, subscribe to the GattServicesChanged event.
                     GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////SPECIFIC TO SALTER DEVICE. NEEDS TO BE CUSTOMISED FOR EACH DEVICE SERVICE/CHARACTERISTIC
+                    /////SPECIFIC TO BM57 DEVICE. NEEDS TO BE CUSTOMISED FOR EACH DEVICE SERVICE/CHARACTERISTIC
                     if (result.Status == GattCommunicationStatus.Success)
                     {
                         Guid serviceGUID;
