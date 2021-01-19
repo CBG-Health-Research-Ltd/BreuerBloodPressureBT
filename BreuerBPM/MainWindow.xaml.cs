@@ -477,6 +477,14 @@ namespace BreuerBPM
                 SYS1_manual.IsEnabled = true;
                 DIA1_manual.IsEnabled = true;
                 PUL1_manual.IsEnabled = true;
+                SYS2_manual.IsEnabled = false;
+                DIA2_manual.IsEnabled = false;
+                PUL2_manual.IsEnabled = false;
+                SYS3_manual.IsEnabled = false;
+                DIA3_manual.IsEnabled = false;
+                PUL3_manual.IsEnabled = false;
+
+
                 clear1.IsEnabled = true;
 
                 enableIndicator(1);
@@ -1130,12 +1138,11 @@ namespace BreuerBPM
                 InputValues(SYS, DIA, PUL);
             }
             else
-            {
-                allMeasurements.Clear();
-                MessageBox.Show("Your Blood Pressure device has more than 10 measurements stored in memory.\n\n" +
+            {            
+                    allMeasurements.Clear();
+                    MessageBox.Show("Your Blood Pressure device has more than 10 measurements stored in memory.\n\n" +
                     "Please turn the device off, click 'M1', then hold down both 'M1' and 'M2'.\n\n" +
-                    "Close this message once memory is cleared, you can then continue taking measurements.");
-
+                    "Close this message once memory is cleared, you can then continue taking measurements.");                                               
             }
 
         }
