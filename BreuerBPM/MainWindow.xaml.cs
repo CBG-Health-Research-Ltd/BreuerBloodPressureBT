@@ -470,6 +470,7 @@ namespace BreuerBPM
                 PUL1.Visibility = Visibility.Hidden;
                 PUL2.Visibility = Visibility.Hidden;
                 PUL3.Visibility = Visibility.Hidden;
+                Application.Current.Dispatcher.Invoke(() => { SYS1.Text = "SYS1"; DIA1.Text = "DIA1"; PUL1.Text = "PUL1"; SYS2.Text = "SYS2"; DIA2.Text = "DIA2"; PUL2.Text = "PUL2"; SYS3.Text = "SYS3"; DIA3.Text = "DIA3"; PUL3.Text = "PUL3"; });
                 save1.Visibility = Visibility.Visible;
                 save2.Visibility = Visibility.Visible;
                 save3.Visibility = Visibility.Visible;
@@ -486,6 +487,8 @@ namespace BreuerBPM
 
 
                 clear1.IsEnabled = true;
+                clear2.IsEnabled = false;
+                clear3.IsEnabled = false;
 
                 enableIndicator(1);
 
@@ -502,6 +505,9 @@ namespace BreuerBPM
                 PUL1_manual.Visibility = Visibility.Hidden;
                 PUL2_manual.Visibility = Visibility.Hidden;
                 PUL3_manual.Visibility = Visibility.Hidden;
+                Application.Current.Dispatcher.Invoke(() => { SYS1_manual.Text = String.Empty; DIA1_manual.Text = String.Empty; PUL1_manual.Text = String.Empty; 
+                    SYS2_manual.Text = String.Empty; DIA2_manual.Text = String.Empty; PUL2_manual.Text = String.Empty; SYS3_manual.Text = String.Empty; DIA3_manual.Text = String.Empty; PUL3_manual.Text = String.Empty;
+                });
                 SYS1.Visibility = Visibility.Visible;
                 SYS2.Visibility = Visibility.Visible;
                 SYS3.Visibility = Visibility.Visible;
@@ -514,6 +520,11 @@ namespace BreuerBPM
                 save1.Visibility = Visibility.Hidden;
                 save2.Visibility = Visibility.Hidden;
                 save3.Visibility = Visibility.Hidden;
+
+                clear1.IsEnabled = true;
+                clear2.IsEnabled = false;
+                clear3.IsEnabled = false;
+
                 enableIndicator(1);
 
             }
@@ -1276,7 +1287,7 @@ namespace BreuerBPM
             save1.IsEnabled = false; save2.IsEnabled = false; save3.IsEnabled = false;
             button.IsEnabled = false; ClearAll.IsEnabled = false;
             SYS1_manual.IsEnabled = false; DIA1_manual.IsEnabled = false; PUL1_manual.IsEnabled = false; SYS2_manual.IsEnabled = false; DIA2_manual.IsEnabled = false; PUL2_manual.IsEnabled = false; SYS3_manual.IsEnabled = false; DIA3_manual.IsEnabled = false; PUL3_manual.IsEnabled = false;
-            counter = 10;
+            counter = 60;
             dispatcherTimer2.Interval = new TimeSpan(0, 0, 1);//
             dispatcherTimer2.IsEnabled = true;
             dispatcherTimer2.Start();
